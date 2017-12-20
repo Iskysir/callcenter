@@ -1,0 +1,199 @@
+/*!
+ * style.css v 1.0.0
+ * Copyright 2015 mengfx
+ */
+
+/* 公共css */
+html,body,div,p,ul,li,dl,dt,dd,h1,h2,h3,h4,h5,h6,form,input,select,button,textarea,iframe,table,th,td
+	{
+	margin: 0;
+	padding: 0;
+	word-wrap: break-word;
+	font-family: "微软雅黑", "宋体", Arial, Helvetica, sans-serif;
+}
+/*top*/
+.panel-header {
+	/* display:none; */
+}
+.layout-panel-west .panel-title {
+	padding-left:18px;
+	margin-top:10px;
+	margin-bottom:10px;
+	color:#1E5E9C;
+}
+.header {
+  height:70px;
+  min-width:1024px;
+  overflow-y:hidden;
+  overflow-x:auto;
+  color:#FFF;
+  background-color:#1E5E9C;
+}
+.logo {
+  float:left;
+ /* width:358px;*/
+  height:70px;
+  line-height:70px;
+  margin-left:40px;
+  color: #FFFFFF;
+}
+.logo .logoTitle {
+	height:45px;
+  	line-height:45px;
+  	font-size:32px;
+  	font-family:"微软雅黑";
+}
+.logo .logoSubTitle {
+	height:25px;
+  	line-height:15px;
+  	font-size:15px;
+  	font-family:"微软雅黑";
+}
+.navv {
+  float:left;
+  margin-left:60px;
+  line-height: 70px;
+}
+.changeSystem {
+  width: 120px;
+  height: 45px;
+  line-height: 45px;
+  border-radius: 30px;
+  background-color: #2267AC;
+  font-size: 14px;
+  outline: none;
+  border:none;
+  color:#FFFFFF;
+}
+.systemList {
+  width: 300px;
+  height: auto;
+  min-height: 60px;
+  background-color: #1E5E9C;
+  font-size: 16px;
+  position: fixed;
+  top:70px;
+  left:350px;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  z-index: 999999 !important;
+}
+.systemList ul {
+  list-style: none;
+}
+.systemList ul li {
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  border-top: 1px solid #21507A;
+}
+.systemList ul li:hover {
+  background-color: #2267AC;
+}
+.systemList ul li>span {
+  margin-right: 6px;
+}
+.globalBtn ul li {
+  float:left;
+  width:auto;
+  height:70px;
+  line-height:70px;
+  list-style:none;
+  text-align:center;
+  font-size:16px;
+  color:#FFFFFF;
+  padding-left:30px;
+  padding-right:30px;
+}
+.globalBtn {
+  float:right;
+}
+.globalBtn ul li>span {
+  padding-right:6px;
+}
+.globalBtn ul li {
+  border-left:1px solid #21507A;
+}
+.globalBtn .user_info {
+  border-left: none;
+  overflow: hidden;
+  font-size:12px;
+  padding-right:10px;
+  padding-left:0px;
+}
+.globalBtn span.glyphicon {
+	font-size:16px;
+	margin-right:3px;
+}
+.l-btn-text{
+	color:#FFFFFF;
+	font-size:16px;
+}
+.m-btn-downarrow {
+	display:none;
+}
+
+/*left*/
+.tree-node-selected {
+	color:#FFFFFF !important;
+	background-color:#2267AC !important;
+}
+.tree-node-selected a {
+	color:#FFFFFF !important;
+}
+
+/*bottom & content*/
+.panel-body {
+	padding:0px;
+}
+
+/*tab fix*/
+.tabs {
+	height:50px;
+}
+.tabs li {
+	margin:-1px 0px -1px 0px;
+}
+.tabs li a.tabs-inner {
+	/* width:200px; */
+	height:50px;
+	line-height:50px;
+	padding:0px 30px;
+}
+.tabs li a.tabs-close {
+	right:15px;
+	background:url(images/tab_colse.png) no-repeat;
+}
+.tabs li a.tabs-inner {
+	background:#F5F5F5;
+}
+.tabs li.tabs-selected a.tabs-inner {
+	color:#205D9C;
+	font-weight:bold;
+	background:#FFFFFF;
+}
+.tabs-title {
+	font-size:14px;
+}
+.tabs-header, .tabs-scroller-left, .tabs-scroller-right, .tabs-tool, .tabs, .tabs-panels, .tabs li a.tabs-inner, .tabs li.tabs-selected a.tabs-inner, .tabs-header-bottom .tabs li.tabs-selected a.tabs-inner, .tabs-header-left .tabs li.tabs-selected a.tabs-inner, .tabs-header-right .tabs li.tabs-selected a.tabs-inner {
+	border-color:#D1D1D1;
+}
+
+/*list fix*/
+div.layout-panel-north div.layout-body {
+	height:70px !important;
+}
+
+ .panel-body-noborder{    overflow: hidden;}
+
+
+
+
+
+
+
+
+
+
+
+

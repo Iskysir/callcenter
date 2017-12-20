@@ -1,0 +1,10 @@
+[{
+	"id":"folder_1",
+	"text":"Folder1",
+	"iconCls":"icon-ok",
+	"children":[{
+		"id":"测试图层",
+		"text":"测试图层",
+		"checked":false
+	}]
+	}]

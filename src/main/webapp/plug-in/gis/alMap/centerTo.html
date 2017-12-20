@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>定位到某个位置</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="lib/ChrhcMap.Include.js"></script>
+    <script type="text/javascript">
+        var baseMap, eyeMap;
+		var cMap;
+		var entityAdded=false;
+		var entityLayer ;
+		var _LineLayer;
+        function InitMap() {
+		var option={ 
+			mapId:"mapDiv",//自定义DIV ID,该ID指定将地图放在什么位置
+			mapWidth:1924,//地图的宽度
+			mapHeight:900,//地图的高度
+			centerTo:"11894,14420",
+			showCenter:true
+			
+			};
+		   cMap = new ChrhcMap(option);
+		
+		
+        }
+		
+		function centerTo(){
+		var markerUrl = "images/markerbig.png";
+			cMap.setCenter(8024,8156,2,true,null,markerUrl);
+		}
+    </script>
+
+</head>
+<body style="margin: 0" onload="InitMap();">
+	<input onclick="centerTo()" value="定位到某个位置" type="button" />
+<div id="mapDiv" />
+</body>
+
+</html>

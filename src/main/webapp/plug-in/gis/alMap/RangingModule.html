@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>测距事件</title>
+	<meta http-equiv="Content-Type" content="IE=8;text/html; charset=utf-8;" />
+
+    <script type="text/javascript" src="js/Library.js"></script>
+</head>
+<script type="text/javascript">
+    var vM; //定义重命名地图对象变量名称
+	var _LineLayer;
+    function InitMap() {
+        vM = vEdushiMap;
+        //测距操作进行中
+        vM.attachEvent(AlaMap.KeyWord.EventName.ScaleIng, function (coords) {
+            //debugger;
+            //your logical code
+
+        });
+
+        //测距操作结束
+        vM.attachEvent(AlaMap.KeyWord.EventName.ScaleEnd, function (distance, flg) {
+            //your logical code
+            alert('测距结束，总距离为：' + distance);
+        });
+
+			  vM.LoadModule('Area', function() {
+                vM.attachEvent(AlaMap.KeyWord.EventName.AreaEnd, function(area, flg) {
+                                       alert('面积'+area+'平方米'+ "  flg="+flg);
+                    //area:面积，flg:true->系统执行了stop，false->人工执行了stop
+                   
+                });
+            });
+    }
+</script>
+<body onload="InitMap();">
+    <input type="button" onclick="vM.StartScale()" value="测距" />
+	 <input type="button" onclick="vM.Area.StartArea();" value="测面" />
+	
+    <div id="vMEdushiMap">
+    </div>
+</body>
+</html>
+<!--//--------------加载地图----------------------------------------->
+
+<script type="text/javascript" src="http://apiinkey.alayun.net/?mapid=vMEdushiMap&city=hangzhou&w=1120&h=540&x=7050&y=12866&eye=false&ew=180&eh=140&e=utf-8&z=1&v=2&zb=false&s=false"></script>
+<!--//--------------加载地图----------------------------------------->

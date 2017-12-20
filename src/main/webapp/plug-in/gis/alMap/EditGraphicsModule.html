@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>可编辑图形模块</title>
+	 <meta http-equiv="X-UA-Compatible" content="IE=8;text/html;charset=utf-8" />
+<script type="text/javascript" src="lib/ChrhcMap.Include.js"></script>
+    <script type="text/javascript">
+        var baseMap, eyeMap;
+		var cMap;
+		var entityAdded=false;
+		var entityLayer ;
+		var _LineLayer;
+        function InitMap() {
+		var option={ 
+			mapId:"mapDiv",//自定义DIV ID,该ID指定将地图放在什么位置
+			mapWidth:900,//地图的宽度
+			mapHeight:900,//地图的高度
+			centerTo:"11894,14420",//初始化时定位到的位置
+			callBack:setMap//地图初始化完毕后执行的方法
+			};
+		   cMap = new ChrhcMap(option);
+		
+        }
+		function setMap(map){
+			baseMap = map;
+			  
+		}
+
+    //画可编辑的折线
+    function DrawPolyLineEditEnabled() {
+        cMap.startDraw("polyline",null,drawLineEnd);
+    }
+    //画可编辑的多边形
+    function DrawPolyEditEnabled() {
+        cMap.startDraw("poly",null,drawLineEnd);
+    }
+	//画可编辑的点实体
+    function DrawPointEditEnabled() {
+		var config = {baseMap:this.baseMap,symbleType:"Markers",markerUrl:"images/markerbig.png",offectX:12,offectY:25};
+		var markerSymble = new ChrhcMap.Symble(config);	
+			cMap.startDraw("point",markerSymble,drawPointEnd);
+    }
+    //停止编辑，一般用于触发保存事件
+    function StopShapeEdit() {
+         cMap.stopDraw();
+    }
+	var lastShapeId;
+	/*
+	var callBackObject = {shapeId:shapeId,coords:coords};
+	*/
+	function drawLineEnd(e){
+		alert("当前所画的图形的ID为："+e.shapeId+" 坐标串为："+e.coords);
+		lastShapeId = e.shapeId;
+		document.getElementById("coordsId").value = e.coords;
+		/*
+		此处可以进行数据的提交
+		*/
+	}
+	var lastPointId;
+	/*
+		return :id,name, coords
+		*/
+	function drawPointEnd(id,name, coords){
+		alert("当前所画的图形ID:"+id+"坐标串："+coords);
+		lastPointId = id;
+		document.getElementById("coordsId").value = coords;
+	}
+    //删除选中的编辑图形
+    function RemoveCurrentShape() {
+        cMap.removeSelectedShape(removeSelectedObjEvent);
+    }
+	/*
+	根据ID删除矢量对象
+	*/
+	function removeLastShape(){
+		if(lastShapeId!=null){
+			cMap.removeShapeById(lastShapeId);
+		}
+		
+	}
+	/*
+	根据ID删除图标
+	*/
+	function removeLastEntity(){
+		if(lastPointId!=null){
+			cMap.removeEntityById(lastPointId);
+		}
+		
+	}
+	
+	function removeSelectedObjEvent(id){
+		alert("所删除的对象ID为:"+id);
+		/*
+		此处可以利用删除后返回的对象ID，对数据库进行删除更新
+		*/
+	}
+
+	function removeAllShapeEvent(){
+		alert("已经成功将所有编辑的对象删除了");
+	}
+	function reSetDrawStyle(){
+		var style = {
+						Color:"#FFee00",
+						FillColor:"yellow",
+						Opacity:0.7,
+						Size:2,
+						StrokeColor:"#FFeeEE"
+				}
+		
+		var newId = cMap.reSetDrawStyle(lastShapeId,style);
+		alert("修改前的ID为："+lastShapeId+"   修改后的ID为："+newId);
+		/*
+		此处的代码自定义开发
+		将页面已存储的lastShapeId进行替换为newId
+		*/
+		lastShapeId = newId;
+		
+	}
+</script>
+<body onload="InitMap();">
+	<input onclick="DrawPointEditEnabled()" value="绘制点" type="button" />
+    <input onclick="DrawPolyLineEditEnabled()" value="绘制线段" type="button" />
+    <input onclick="DrawPolyEditEnabled()" value="绘制多边形" type="button" />
+	<input onclick="reSetDrawStyle()" value="修改多边形样式" type="button" />
+    <input onclick="StopShapeEdit()" value="停止绘制" type="button" />
+    <input onclick="RemoveCurrentShape()" value="删除选中线面图形" type="button" />
+	<input onclick="removeLastShape()" value="根据ID删除线面图形" type="button" />
+	<input onclick="removeLastEntity()" value="根据ID删除图标" type="button" />
+	<input id="coordsId" type="text" />
+    <div id="mapDiv">
+    </div>
+</body>
+</html>

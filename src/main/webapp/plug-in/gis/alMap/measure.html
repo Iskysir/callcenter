@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>加载地图</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8;IE=8" />
+<script type="text/javascript" src="lib/ChrhcMap.Include.js"></script>
+    <script type="text/javascript">
+        var baseMap, eyeMap;
+		var cMap;
+		var entityAdded=false;
+		var entityLayer ;
+		var _LineLayer;
+        function InitMap() {
+		var option={ 
+			mapId:"mapDiv",
+			mapWidth:800,
+			mapHeight:800,
+			callBack:setMap//地图初始化完毕后执行的方法
+			};
+		   cMap = new ChrhcMap(option);
+		
+		
+        }
+		function setMap(map){
+			baseMap = map;
+			//AppendTestEntitys();
+			  
+		}
+
+		function measure(type){
+			if(cMap){
+				cMap.measure(type);
+			}
+		}
+
+    </script>
+
+</head>
+<body style="margin: 0" onload="InitMap();">
+<div id="mapDiv" />
+ <div id="tool" style="position: absolute; top: 10px; left: 10px; background: #fff;font-size: 12px;">
+       
+		<span style="cursor: pointer; margin-left: 5px;" onclick="measure('1');">测距</span>
+		<span style="cursor: pointer; margin-left: 5px;" onclick="measure('2');">测面积</span>
+		
+	 </div>
+</body>
+
+</html>

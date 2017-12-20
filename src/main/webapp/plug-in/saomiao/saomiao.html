@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>扫描身份证</title>
+
+    <link href="css/stylePlus.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+	<div class="Current_position">
+    	<img src="../media/image/dingwei.png"/><span>当前所在的位置：</span><a href="javascript:;">快捷业务</a>
+    </div>
+    <div class="flash">
+      <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+        codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"
+        width="370" height="50" id="123" align="">
+        <param name=movie value="123.swf"><param name=quality value=high>
+        <embed src="123.swf" quality=high  width="370" height="50" name="123" align=""
+        type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer">
+        </embed></object>
+    </div>
+    <div class="id">
+      <div class="h"></div>
+    </div>
+    
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+    <script type="text/javascript">
+      var donghua01,donghua02;
+      $(document).ready(function(){
+        function moveDown() {
+          $(".h").animate({top:"375px"},3000);
+        }
+        function moveUp() {
+          $(".h").animate({top:"10px"},3000);
+        }
+        donghua01 = setInterval(function(){ moveDown();},3000);
+        donghua02 = setInterval(function(){ moveUp();},3000);
+
+      });
+    </script>
+  </body>
+</html>

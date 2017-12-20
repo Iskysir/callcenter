@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>artDialog示例整理</title>
+<link rel="stylesheet" href="css/demo.css" />
+<script type="text/javascript" src="js/artDialog.js?skin=default"></script>
+</head>
+<body>
+	<div class="row">
+		示例一：<input type="button" value="点我" onClick="demo1();"/>（简易弹出框）
+	</div>
+    <div class="row">
+		实例二：<input type="button" value="点我" onClick="demo2();"/>（一个有确定按钮的弹出框）
+	</div>
+    <div class="row">
+		实例三：<input type="button" value="点我" onClick="demo3();"/>（一个有确定、取消按钮的弹出框）
+	</div>
+    <div class="row">
+		实例四：<input type="button" value="点我" onClick="demo4();"/>（一个loading弹出框）
+	</div>
+    <div class="row">
+		实例五：<input type="button" value="点我" onClick="demo5();"/>（使用option配置弹出框）
+	</div>
+    <div class="row">
+		实例六：<input type="button" value="点我" onClick="demo6();" id="input6"/>（位置follow控件的弹出框）
+	</div>
+    <div class="row">
+		实例七：<input type="button" value="点我" onClick="demo7();"/>（3秒自动消失的弹出框）
+	</div>
+    <div class="row">
+		实例八：<input type="button" value="点我" onClick="demo8();"/>（点击确定关闭3秒后关闭弹出框）
+	</div>
+    <div class="row">
+		实例九：<input type="button" value="点我" onClick="demo9();"/>（有遮罩的弹出框）
+	</div>
+    <div class="row">
+		实例十：<input type="button" value="点我" onClick="demo10();"/>（引入html内容，取消改名关闭）
+	</div>
+    <!--实例10的内容区域-->
+    <div id="demo10" style="display:none;">
+    	请输入用户名：<input value=""/>
+    </div>
+    <div class="row">
+		实例十一：<input type="button" value="点我" onClick="demo11();"/>（自定义按钮）
+	</div>
+    <div class="row">
+		实例十二：<input type="button" value="点我" onClick="demo12();"/>（使用id防止重复弹出）
+	</div>
+    <div class="row">
+		实例十三：<input type="button" value="点我" onClick="demo13();"/>（使用遮罩防止重复弹出）
+	</div>
+    <div class="row">
+		实例十四：<input type="button" value="点我" onClick="demo14();"/>（显示确定和取消按钮--默认）
+	</div>
+    <div class="row">
+		实例十五：<input type="button" value="点我" onClick="demo15();"/>（显示ok和cancel按钮）
+	</div>
+    <div class="row">
+		实例十六：<input type="button" value="点我" onClick="demo16();"/>（显示内容为一图片）
+	</div>
+    <div class="row">
+		实例十七：<input type="button" value="点我" onClick="demo17();"/>（显示边距为0的图片）
+	</div>
+    <div class="row">
+		实例十八：<input type="button" value="点我" onClick="demo18();"/>（修改背景色和透明度）
+	</div>
+        <div class="row">
+		实例十九：<input type="button" value="点我" onClick="demo19();"/>（来个二级锁屏）
+	</div>
+    </div>
+    <div class="row">
+		实例二十：<input type="button" value="点我" onClick="demo20();"/>（弹出右下角公告框,自定义大小，固定位置）
+	</div>
+    <div class="row">
+		实例二十一：<input type="button" value="点我" onClick="demo21();"/>（弹出一个全屏对话框）
+	</div>
+    <div class="row">
+		实例二十二：<input type="button" value="点我" onClick="demo22();"/>（默认为静止定位，现在改为随页面滚动）
+	</div>
+    <div class="row">
+		实例二十三：<input type="button" value="点我" onClick="demo23();"/>（不许拖拽）
+	</div>
+    <div class="row">
+		实例二十四：<input type="button" value="点我" onClick="demo24();"/>（标题倒计时）
+	</div>
+	<script>
+    	function demo1(){
+			art.dialog("这是一个简单的信息提示框");
+		}
+		function demo2(){
+			art.dialog("点击确定执行ok方法",function(){art.dialog("你点击了确定");});
+		}
+		function demo3(){
+			art.dialog("今年发年终奖么？",function(){art.dialog("你太乐观了，亲！")},function(){art.dialog("你太悲观了，亲！")});
+		}
+		function demo4(){
+			var myDialog=art.dialog();
+		}
+		function demo5(){
+			var dialog = art.dialog({
+				title:'<img src="js/skins/icons/denglou.png" width="48" height="25" />这里是标题',
+				content:"这里显示弹出框内容",
+				icon:"denglou"
+			});
+		}
+		function demo6(){
+			var dialog = art.dialog({
+				title:"跟随第六个按钮",
+				content:"这里显示内容",
+				follow:document.getElementById("input6")
+			});
+		}
+		function demo7(){
+			var dialog = art.dialog({
+				title:"3秒后自动关闭",
+				content:"3秒后自动关闭",
+				time:3
+			});
+		}
+		function demo8(){
+			var dialog = art.dialog({
+				ok:function(){
+					this.title("警告").content("3秒后自动关闭").time(3);
+					return false;
+				}
+			});
+		}
+		function demo9(){
+			var dialog = art.dialog({
+				title:"标题",
+				content:"有遮罩的弹出框",
+				lock:true,
+				ok:function(){}
+			});
+		}
+		function demo10(){
+			var dialog10 = art.dialog({
+				title:"标题",
+				content:document.getElementById("demo10"),
+				ok:function(){
+					art.dialog("已提交").time(1);
+				},
+				cancel:function(){},
+				cancelVal:"关闭"
+			});
+		}
+		function demo11(){
+			var dialog = art.dialog({
+				title:"自定义按钮示例",
+				content:"演示自定义按钮的使用",
+				button:[
+					{
+						name:"同意",
+						callback:function(){
+							this.content("你点击了同意").time(2);
+							return false;
+						}
+					
+					},
+					{
+						name:"拒绝",
+						callback:function(){
+							alert("你不同意");
+						}
+					},
+					{
+						name:"无效按钮",	
+						disabled:true
+					},
+					{
+						name:"关闭我"
+					},
+					{
+						name:"关不掉我",
+						callback:function(){
+							this.title("警告");
+							this.content("你不能关闭我");
+							return false;
+						}
+					}
+				]
+			});
+		}
+		function demo12(){
+			var mydialog = art.dialog({
+				content:"使用id防止重复弹出",
+				id:"dialog001"
+			});
+		}
+		function demo13(){
+			var mydialog = art.dialog({
+				content:"使用遮罩防止重复弹出",
+				lock:true
+			});
+		}
+		function demo14(){
+			var mydialog = art.dialog({
+				ok:true,
+				cancel:true
+			});
+		}
+		function demo15(){
+			var mydialog = art.dialog({
+				ok:true,
+				okVal:"ok",
+				cancel:true,
+				cancelVal:"cancel"
+			});
+		}
+		function demo16(){
+			var mydialog = art.dialog({
+				title:"照片",
+				content:"<img src='web.jpg'/>",
+				lock:true
+			});
+		}
+		function demo17(){
+			var mydialog = art.dialog({
+				title:"照片",
+				content:"<img src='web.jpg'/>",
+				lock:true,
+				padding:0
+			});
+		}
+		function demo18(){
+			var mydialog = art.dialog({
+				content:"改变背景色和透明度",
+				background:"#600",
+				opacity:0.5,
+				lock:true
+			});
+		}
+		function demo19(){
+			var mydialog = art.dialog({
+				lock:true,
+				ok:function(){
+					art.dialog({content:"第二个锁屏",lock:true});
+					return false;
+				},
+				cancel:true
+			});
+		}
+		function demo20(){
+			var mydialog = art.dialog({
+				title:"公告",
+				width:300,
+				height:320,
+				left:"100%",
+				top:"100%",
+				fixed:true,
+				drag:false,
+				resize:false
+			});
+		}
+		function demo21(){
+			var mydialog = art.dialog({
+				width:"100%",
+				height:"100%",
+				fixed:true
+			});
+		}
+		function demo22(){
+			var mydialog = art.dialog({
+				content:"拉一下滚动条看看效果",
+				fixed:false
+			});
+		}
+		function demo23(){
+			var mydialog = art.dialog({
+				content:"不许拖拽",
+				drag:false,
+				fixed:true
+			});
+		}
+		function demo24(){
+			var timer;
+			var mydialog = art.dialog({
+				content:"标题倒计时关闭",
+				init:function(){
+					var that = this;
+					var i=5;
+					var fn=function(){
+						that.title(i+"秒后关闭");
+						if(i>0){
+							i--;
+						}else{
+							that.close();
+						}
+					}
+					timer = setInterval(fn,1000);
+					fn();
+				},
+				close:function(){
+					clearInterval(timer);
+				}
+			});
+		}
+    </script>
+</body>
+</html>

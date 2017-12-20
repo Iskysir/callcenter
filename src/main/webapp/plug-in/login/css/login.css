@@ -1,0 +1,367 @@
+@charset "utf-8";
+
+/*登陆页面css*/
+html, body, div, p, ul, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, form, input, select, button, textarea, iframe, table, th, td {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: url(../images/loginbg.jpg) #d0d2d5 center top repeat;
+	color: #7f8c97;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+
+ul, li, p {
+	list-style-type: none;
+}
+
+form input {
+	border: none;
+}
+
+.loginbg {
+	position: relative;
+	width: 680px;
+	height: 375px;
+	margin:0 auto;
+	margin-top: 13%;
+	background: url(../images/loginbox.png) no-repeat center center;
+}
+.loginTop {
+	position: absolute;
+	margin: 0 auto;
+	top:0px;
+	width:100%;
+	font-family: "微软雅黑";
+}
+.loginTitle {
+	margin:0 auto;
+	width:680px;
+	font-size:36px;
+	font-weight:bold;
+	color: #1F5E9A;
+	text-align: center;
+}
+.mzlogo {
+	float:left;
+	width: 46px;
+	height: 46px;
+	background: url(../images/login_logo.png) no-repeat left top;
+}
+.loginEnTitle {
+	font-size:12px;
+	color: #1F5E9B;
+	text-align: center;
+}
+.loginPart {
+	position: absolute;
+	margin: 0 auto;
+	top: 103px;
+	left: 210px;
+	overflow: hidden;
+	width: 258px;
+}
+
+.loginPart li {
+	clear: both;
+	height: 50px;
+	overflow: hidden;
+}
+.loginPart li.remeberPsw {
+	height: 40px;
+	line-height: 40px;
+	margin-top:-10px;
+}
+.loginPart li.remeberPsw input {
+	margin-left:15px;
+	margin-right:5px;
+	vertical-align: middle; 
+	padding:2px;
+}
+.userName,.userPassword,.vfCode {
+	height: 39px;
+	line-height: 39px;
+	margin-left: 40px;
+	margin-bottom: 10px;
+	width: 203px;
+	background: transparent;
+	font-family: "微软雅黑";
+	padding-left: 6px;
+}
+
+.code {
+	position: relative;
+}
+
+.kCode {
+	position: absolute;
+	right: 15px;
+	top: 5px;
+	width: 51px;
+	height: 29px;
+	line-height: 29px;
+	text-align: center;
+	border-radius: 3px;
+	color: #FFFFFF;
+	background-color: #BBBBBB;
+}
+
+.loginSubmit {
+	float:left;
+	width: 150px;
+	cursor: pointer;
+	padding: 10px 45px;
+    color: #FFFFFF;
+    outline: none;
+    background-color: #519328;
+    border:1px solid #519328;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    background-image: none;
+    border-radius: 4px;
+}
+.loginReset {
+	float:left;
+	width: 100px;
+	cursor: pointer;
+	padding: 10px 30px;
+	margin-left:8px;
+    color: #333333;
+    outline: none;
+    background-color: #F8F8F8;
+    border:1px solid #A4A4A4;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    background-image: none;
+    border-radius: 4px;
+}
+.error {
+	color: #FF0000;
+	line-height: 24px;
+	text-align: center;
+}
+
+.copyright {
+	position: absolute;
+	color: #999999;
+	text-align: center;
+	top: 350px;
+	left: 235px;
+}/*alertMessage*/
+
+.alertMessage,#alertMessage
+{
+	-webkit-background-size: 40px 40px;
+	-moz-background-size: 40px 40px;
+	background-size: 40px 40px;
+	background-image: -webkit-gradient(linear, left top, right bottom,
+								color-stop(.25, rgba(255, 255, 255, .05)), color-stop(.25, transparent),
+								color-stop(.5, transparent), color-stop(.5, rgba(255, 255, 255, .05)),
+								color-stop(.75, rgba(255, 255, 255, .05)), color-stop(.75, transparent),
+								to(transparent));
+	background-image: -webkit-linear-gradient(135deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
+							transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
+							transparent 75%, transparent);
+	background-image: -moz-linear-gradient(135deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
+							transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
+							transparent 75%, transparent);
+	background-image: -ms-linear-gradient(135deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
+							transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
+							transparent 75%, transparent);
+	background-image: -o-linear-gradient(135deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
+							transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
+							transparent 75%, transparent);
+	background-image: linear-gradient(135deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
+							transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
+							transparent 75%, transparent);
+	-moz-box-shadow: inset 0 -1px 0 rgba(255,255,255,.4);
+	-webkit-box-shadow: inset 0 -1px 0 rgba(255,255,255,.4);
+	box-shadow: inset 0 -1px 0 rgba(255,255,255,.4);
+	font-size:13px;
+	text-transform:capitalize;
+/*	font-weight:bold;*/
+	border: 1px solid!important;
+	color: #fff;
+	padding: 15px;
+	text-shadow: 0 1px 0 rgba(0,0,0,.5);
+	-webkit-animation: animate-bg 5s linear infinite;
+	-moz-animation: animate-bg 5s linear infinite;
+	margin-bottom: 10px;
+}
+#alertMessage{
+	position:fixed;
+	/*	display:none;
+	position: absolute;
+	opacity:0;
+	filter:alpha(opacity=0);*/
+	right: -90px;
+	text-transform: uppercase;
+	bottom: 35px;
+	z-index:100001;
+	cursor:pointer;
+	border: 1px solid;
+	display: none;
+	}
+
+.alertMessage.info ,#alertMessage.info 
+{
+		 border-color: #3b8eb5!important;
+	background-color:#C2E3F0;
+	color:#34667A!important;
+	text-shadow:1px 1px 1px #C8EBFB;
+}
+
+.alertMessage.error ,#alertMessage.error
+{
+	border-color: #c43d3d!important;
+	background-color:#fc4a48;
+	color:#5A0000 !important;
+	text-shadow:1px 1px 1px #E64040;
+}
+.alertMessage.warning ,#alertMessage.warning 		 
+{
+		 border-color: #d99a36 !important;
+	background-color:#fcdb72;
+	color:#987402 !important;
+	text-shadow:1px 1px 1px #e7b104;
+}
+.alertMessage.success ,#alertMessage.success 
+{
+		 background-color: #61b832;
+		 border-color: #55a12c !important;
+/*	color:#324e03 !important;*/
+	text-shadow:1px 1px 1px #5c9201;
+}
+
+.alertMessage h3
+{
+		 margin: 0  !important;
+		 border:none;
+		line-height: 25px !important;
+		color:#FFF;
+}
+
+.message p
+{
+		 margin: 0;													 
+}
+
+@-webkit-keyframes animate-bg
+{
+    from {
+        background-position: 0 0;
+    }
+    to {
+       background-position: -80px 0;
+    }
+}
+
+
+@-moz-keyframes animate-bg 
+{
+    from {
+        background-position: 0 0;
+    }
+    to {
+       background-position: -80px 0;
+    }
+}
+
+.text_success {
+	font-size:14px;
+	text-align:center;
+	margin:0px 0 35px 0;
+	line-height:25px;
+	position: absolute;
+	left: 50%;
+	width: 200px;
+	top: 50%;
+	z-index: 50;
+	margin-left: -100px;
+	text-transform: uppercase;
+	padding: 20px 0px;
+	margin-top: -100px;
+	display: none;
+}
+.text_success img {
+}
+.text_success span {
+	display: block;
+	padding: 10px;
+	color: #CCC;
+}
+/*
+	loading layout
+*/
+#overlay {
+	width:100%;
+	height:100%;
+	position:fixed;
+	top:0;
+	left:0;
+	background-color:#111;
+	/*	opacity:0.1;
+	filter:alpha(opacity=10);*/
+	z-index:1000;
+	display: none;
+}
+#preloader {
+	background: #000000 url(../images/preloader.gif) no-repeat 12px 10px;
+	font-size: 11px;
+	height: 20px;
+	left: 50%;
+	line-height: 20px;
+	margin: -20px 0 0 -45px;
+	padding: 10px;
+	position: fixed;
+	text-align: left;
+	text-indent: 36px;
+	top: 50%;
+	width: 90px;
+	z-index: 1209;
+	opacity:0.8;
+	filter:alpha(opacity=80);
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	color: #FFF;
+	text-shadow:none;
+	display: none;
+}
+#pageload {
+	background: #000000;
+	font-size: 11px;
+	height: 20px;
+	left: 50%;
+	line-height: 20px;
+	margin: -20px 0 0 -55px;
+	padding: 10px;
+	position: fixed;
+	text-align: center;
+	top: 50%;
+	width: 120px;
+	z-index: 1006;
+	opacity:0.8;
+	filter:alpha(opacity=80);
+	-moz-border-radius: 12px;
+	-webkit-border-radius: 12px;
+	border-radius: 12px;
+	color: #FFF;
+	text-shadow:none;
+	display: none;
+}
+.preloader {
+	display:inline-block;
+	background-color: #ffffff;
+	background-image: url(loader1.gif);
+	background-repeat: no-repeat;
+	background-position: center center;
+}

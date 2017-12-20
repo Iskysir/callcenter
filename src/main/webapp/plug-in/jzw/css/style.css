@@ -1,0 +1,246 @@
+/*!
+ * style.css v 1.0.0
+ * Copyright 2015 mengfx
+ */
+
+  /* ����css */
+  html, body, div, p, ul, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, form, input, select, button, textarea, iframe, table, th, td {
+    margin: 0;
+    padding: 0; 
+    word-wrap:break-word; 
+  } 
+  html,body {
+    font-size:12px;
+    color:#000000;
+  }
+  body.family-box {
+    background-color:#F6F6F6;
+  }
+  .fleft {
+    float: left;
+  }
+  .fright {
+    float: right;
+  }
+  /*
+  *��ɷ���
+  */
+  .building {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    /*overflow: scroll;*/
+  }
+  .building-title {
+    height: 46px;
+    line-height: 46px;
+    color: #3398DA;
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    border:1px solid #3498DB;
+    background-color: #C9E3F5;
+    /*background: url(../images/building_num.png);*/
+  }
+  .building-main {
+    display: block;
+    margin: 20px auto;
+  }
+  .building-main table {
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+  }
+  .building-main table th,td {
+    text-align: center;
+  }
+  .unit {
+    width: 92%;
+    height: 36px;
+    line-height: 36px;
+    display: inline-block;
+    color: #FFFFFF;
+    font-size: 16px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    background-color: #3498DB;
+  }
+  .home {
+    height: 120px;
+    line-height: 120px;
+    display: inline-block;
+    background-color: #F5F5F5;
+  }
+  .home-num {
+    font-family: "΢���ź�";
+    display: inline-block;
+    position: absolute;
+    top: 15px;
+    left: 38px;
+    width: 32px;
+    height: 22px;
+    line-height: 22px;
+    font-size: 12px;
+    color: #333333;
+  }
+  .home-icons {
+    position: relative;
+    width: 100px;
+    height: 60px;
+    margin-top: 45px;
+    margin-left: 2px;
+  }
+  .cell {
+    position: relative;
+    float: left;
+    width: 108px;
+    height: 120px;
+    display: inline-block;
+    background: url(../images/cell.png);
+  }
+  .cell-left {
+    float: left;
+    display: inline-block;
+    width: 6px;
+    height: 120px;
+    background: url(../images/cell_left.png);
+  }
+  .cell-right {
+    float: left;
+    display: inline-block;
+    width: 6px;
+    height: 120px;
+    background: url(../images/cell_right.png);
+  }
+  .floor {
+    width: 40px;
+    height: 30px;
+    line-height: 30px;
+    display: inline-block;
+    color: #FFFFFF;
+    background-color: #3498DB;
+  }
+  .legend {
+    height: 100px;
+    width: 546px;
+    margin: 0 auto;
+  }
+  .circle {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    margin-top: 30px;
+    text-align: center;
+    color: #FFFFFF;
+    background: url(../images/circle.png) no-repeat 0 0;
+  }
+  .icons-list {
+    width: 87%;
+    height: 100px;
+    line-height: 100px;
+    margin-left: 30px;
+  }
+  .icon-wrap {
+    float: left;
+    width: 80px;
+    height: 20px;
+    line-height: 20px;
+    margin-top: 20px;
+  }
+  .icon-wrap span {
+    float: left;
+  }
+  .icon {
+    float: left;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    display: inline-block;
+    background: url(../images/icons.png);
+    cursor:pointer;
+  }
+  .icon-01 {
+    background-position: 0px 0px;
+  }
+  .icon-02 {
+    background-position: -40px 0px;
+  }
+  .icon-03 {
+    background-position: -80px 0px;
+  }
+  .icon-04 {
+    background-position: -120px 0px;
+  }
+  
+  /*图标开始 以首字母命名*/
+  .icon-jt {background-position: 0px 0px;}
+  .icon-yfdx {background-position: -40px 0px;}
+  .icon-knh {background-position: -80px 0px;}
+  .icon-zzh {background-position: -120px 0px;}
+  .icon-zyjr {background-position: -160px 0px;}
+  
+  .icon-jgqldy {background-position: 0px -30px;}
+  .icon-wmjt {background-position: -40px -30px;}
+  .icon-xs {background-position: -80px -30px;}
+  .icon-wbh {background-position: -120px -30px;}
+  .icon-cjr {background-position: -160px -30px;}
+  
+  .icon-dbh {background-position: 0px -60px;}
+  .icon-dyry {background-position: -40px -60px;}
+  .icon-syry {background-position: -80px -60px;}
+  .icon-zary {background-position: -120px -60px;}
+  .icon-kclr {background-position: -160px -60px;}
+  
+  .icon-zyz {background-position: 0px -90px;}
+  .icon-lz {background-position: -40px -90px;}
+  .icon-lnr {background-position: -80px -90px;}
+  .icon-ty {background-position: -120px -90px;}
+  .icon-dy {background-position: -160px -90px;}
+  
+  .icon-twjr {background-position: 0px -120px;}
+  .icon-zdry {background-position: -40px -120px;}
+  .icon-djlr {background-position: -80px -120px;}
+  .icon-ylfn {background-position: -120px -120px;}
+  .icon-qsytx {background-position: -160px -120px;}  
+  /*图标结束*/
+  
+  .icon-plus {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    background: url(../images/add.png) no-repeat;
+  }
+
+  .tuli_box {
+    width:230px;
+    height:310px;
+    background: #F5F5F5 url(../images/tuli.png) no-repeat center 30px;
+    position: absolute; 
+    top:10px; 
+    right:15px;
+    border:1px solid #D3D3D3; 
+    padding-left:15px;
+    padding-right:15px;
+  }
+
+  .tuli_close {
+    width:26px; 
+    height:26px; 
+    line-height:26px; 
+    display:inline-block; 
+    position:absolute; 
+    top:0px; 
+    right: 0px; 
+    cursor:pointer;
+    text-align: center; 
+    color: #838383;
+  }
+
+  .tuli_close:hover{
+    color: #EC6658;
+  }

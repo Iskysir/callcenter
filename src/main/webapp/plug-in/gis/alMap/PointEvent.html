@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>取点事件</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="js/Library.js"></script>
+</head>
+<script type="text/javascript">
+    var vM;
+    var GetCoords = false; //定义重命名地图对象变量名称
+    function InitMap() {
+        vM = vEdushiMap;
+
+        //取点操作进行中
+        vM.attachEvent(AlaMap.KeyWord.EventName.GetCoordsIng, function (coords) {
+            //your logical code
+            if (!GetCoords) {
+               // alert("正在取点，坐标为：" + coords);
+            }
+        });
+
+        //取点操作结束
+        vM.attachEvent(AlaMap.KeyWord.EventName.GetCoordsEnd, function (coords) {
+            //your logical code
+            alert("取点结束，坐标为：" + coords);
+        });
+    }
+</script>
+<body onload="InitMap();">
+    <input onclick="GetCoords=false;vM.StartGetCoords()" value="单个取点" type="button" />
+    <input style="margin-left:10px" onclick="vM.StartGetCoords();GetCoords=true;" value="连续取点" type="button" />
+    <div id="vMEdushiMap">
+    </div>
+</body>
+</html>
+<!--//--------------加载地图----------------------------------------->
+<script type="text/javascript" src="http://apiinkey.alayun.net/?mapid=vMEdushiMap&city=hangzhou&w=1120&h=540&x=7050&y=12866&eye=false&ew=180&eh=140&e=utf-8&z=1&v=2&zb=false&s=false"></script>
+<!--//--------------加载地图----------------------------------------->

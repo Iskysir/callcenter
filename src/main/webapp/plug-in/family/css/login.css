@@ -1,0 +1,114 @@
+@charset "utf-8";
+
+/*登陆页面css*/
+html, body, div, p, ul, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, form, input, select, button, textarea, iframe, table, th, td {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: url(../images/loginbg.jpg) #d0d2d5 center top repeat;
+	color: #7f8c97;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+
+ul, li, p {
+	list-style-type: none;
+}
+
+form input {
+	border: none;
+}
+
+.loginbg {
+	position: relative;
+	width: 568px;
+	height: 335px;
+	margin:0 auto;
+	margin-top: 260px;
+	background: url(../images/loginbox.jpg) no-repeat center center;
+}
+
+.loginPart {
+	position: absolute;
+	margin: 0 auto;
+	top: 103px;
+	left: 155px;
+	overflow: hidden;
+	width: 258px;
+}
+
+.loginPart li {
+	clear: both;
+	height: 50px;
+	overflow: hidden;
+}
+
+.userName,.userPassword {
+	height: 34px;
+	line-height: 34px;
+	margin-left: 40px;
+	margin-bottom: 10px;
+	width: 202px;
+	background: transparent;
+	font-family: "微软雅黑";
+	padding-left: 6px;
+}
+
+/*.vfCode {
+	height: 29px;
+	line-height: 29px;
+	margin-bottom: 15px;
+	padding-left: 15px;
+	width: 195px;
+	float: left;
+	background: transparent;
+}
+
+.kCode {
+	background: none;
+	color: #F00000;
+	font-size: 18px;
+	font-weight: bold;
+	height: 29px;
+	line-height: 29px;
+	width: 51px;
+	float: left;
+	margin-left: 10px;
+}*/
+
+.loginSubmit {
+	width: 248px;
+	cursor: pointer;
+	padding: 10px 45px;
+    color: #FFFFFF;
+    outline: none;
+    background-color: #519328;
+    border-bottom: 3px solid #326A13;
+    display: inline-block;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    background-image: none;
+    border-radius: 4px;
+}
+.loginSubmit:hover {
+	border-bottom-width: 2px;
+}
+
+.error {
+	color: #FF0000;
+	line-height: 24px;
+	text-align: center;
+}
+
+.copyright {
+	position: absolute;
+	color: #999999;
+	text-align: center;
+	top: 270px;
+	left: 175px;
+}

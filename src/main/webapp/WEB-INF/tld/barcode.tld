@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>  
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2eeweb-jsptaglibrary_2_4.xsd"  
+    version="2.0">  
+
+
+
+
+	<tlib-version>1.0</tlib-version>
+	<jsp-version>1.2</jsp-version>
+	<short-name>chr</short-name>
+	<uri>http://www.chrhc.com/BarCodeTag</uri>
+	<display-name>BarCode Tag Example</display-name>
+	<description>BarCode examples</description>
+	<tag>
+		<name>BarCode1D</name>
+		<tag-class>
+			com.test.tag.BarCode1DTag
+		</tag-class>
+		<description>
+		</description>
+		<body-content>JSP</body-content>
+			<attribute>
+			<name>id</name>
+			<required>true</required>
+		</attribute>
+	</tag>
+
+</taglib>

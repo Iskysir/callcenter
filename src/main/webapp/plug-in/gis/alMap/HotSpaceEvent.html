@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>热区事件</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="js/Library.js"></script>
+    <script type="text/javascript">
+        var vM, vMe;
+        function InitMap() {
+            vM = vEdushiMap;
+           // vMe = veyeEdushiMap;
+
+            onresize();
+
+            //用户点击Spot
+            vM.attachEvent(AlaMap.KeyWord.EventName.SpotClick, function (spot) { //热区点击事件
+			//ID:'{0}',Name:'{1}',Lx:{2},Ly:{3},Cx:{4},Cy:{5},Group:'{6}'
+                alert('您当前点击的spot是：'+spot.Name+" Id:"+spot.ID);
+            });
+			
+			 //用户点击了Sign
+
+            vM.attachEvent(AlaMap.KeyWord.EventName.SignClick, function (sign) { //sign公交标签
+			//ID:'{0}',Name:'{1}',Lx:{2},Ly:{3},Cx:{4},Cy:{5},Group:'{6}'
+                alert("您当前点击的标签名为：" + sign.Name+" ID="+sign.ID);
+
+            });
+        }
+    </script>
+</head>
+<body style="margin: 0" onload="InitMap();">
+    <div id="EdushiMap">
+    </div>
+    <div id="eyeEdushiMap" style="position: absolute; bottom: 0px; right: 330px; bottom: 10px">
+    </div>
+</body>
+</html>
+<script type="text/javascript" src="http://61.164.37.195:8003/Default.aspx?mapid=EdushiMap&city=xsxwjd&w=980&h=720&x=10000&y=10000&eye=false&e=utf-8&z=1&v=0&zb=true&s=false"></script>

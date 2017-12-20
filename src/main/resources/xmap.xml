@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<xmap>
+	<mapping-field-def>
+		<field name="userId" type="AN" size="10" />
+		<field name="userName" type="AN" size="40" />
+		<field name="cardType" type="AN" size="1" />
+		<field name="billType" type="AN" size="1" />
+		<field name="userType" type="AN" size="1" />
+		<field name="expTime" type="DATE" type-attr="YYYYMM" />
+		<field name="f2" type="ANS" size="40" />
+		<field name="f3" type="ANS" size="120" />
+		<field name="termNo" type="AN" size="8" />
+		<field name="oprtId" type="AN" size="10" />
+		<field name="handleOrgID" type="AN" size="15" />
+		<field name="handleOrgDate" type="DATE" type-attr="YYYYMMDD" />
+		<field name="orderNo" type="AN" size="20" />
+		<field name="orgID" type="AN" size="15" />
+		<field name="payOrgID" type="AN" size="15" />
+		<field name="billOrgID" type="AN" size="15" />
+		<field name="amount" type="N" size="10" />
+		<field name="billAmount" type="N" size="10" />
+		<field name="billAmount1" type="N" size="10" />
+		<field name="billAmount2" type="N" size="10" />
+		<field name="misc" type="VAR" type-attr="LL" />
+		<field name="accountName" type="ANS" size="40" />
+		<field name="accountStatus" type="AN" size="2" />
+		<field name="amountFlag" type="AN" size="1" />
+		<field name="balance" type="N" size="10" />
+		<field name="creditAmt" type="N" size="10" />
+		<field name="barCode" type="AN" size="34" />
+		<field name="payNo" type="AN" size="30" />
+		<field name="contractNo" type="AN" size="30" />
+		<field name="payNoType" type="AN" size="1" />
+		<field name="payMonth" type="DATE" type-attr="YYYYMM" />
+		<field name="payTimes" type="AN" size="2" />
+		<field name="payFlag" type="N" size="1" />
+		<field name="createBillDate" type="DATE" type-attr="YYYYMMDD" />
+		<field name="billDeadDate" type="DATE" type-attr="YYYYMMDD" />
+	</mapping-field-def>
+	<mapping name="head" param-class="" param-type="" result-class=""
+		result-type="" ctl-class="">
+		<field name="version" type="AN" size="2" fill="false" value="00" />
+		<field name="transcode" type="AN" size="5" />
+		<field name="transtype" type="AN" size="1" />
+		<field name="reqOrgID" type="AN" size="15" />
+		<field name="reqTransDate" type="DATE" type-attr="YYYYMMDD" />
+		<field name="reqSSN" type="AN" size="20" />
+		<field name="resOrgID" type="AN" size="15" />
+		<field name="resTransDate" type="DATE" type-attr="YYYYMMDD" />
+		<field name="resSSN" type="AN" size="20" />
+		<field name="accountNo" type="ANS" size="40" />
+		<field name="accountPass" type="ANS" size="8" />
+		<field name="rescode" type="AN" size="2" />
+	</mapping>
+	
+    
+	<!-- ¶ÌÐÅ½Ó¿Ú -->
+	<mapping name="SmsReqMsg" param-class="" param-type=""
+		result-class="" result-type="" ctl-class="">
+		<field name="txnCode" type="AN" size="5" />
+		<field name="intTxnTm" type="AN" size="14" />
+		<field name="intTxnSeq" type="AN" size="12" />
+		<field name="smsNumber" type="AN" size="20" />
+		<field name="smsContent" type="VAR" type-attr="LLL" />
+	</mapping>
+	<mapping name="SmsResMsg" param-class="" param-type=""
+		result-class="" result-type="" ctl-class="">
+		<field name="txnCode" type="AN" size="5" />
+		<field name="rspCode" type="AN" size="2" />
+		<field name="intTxnSeq" type="AN" size="12" />
+		<field name="smsNumber" type="AN" size="20" />
+		<field name="smsContent" type="VAR" type-attr="LLL" />
+	</mapping>
+
+	
+
+	
+</xmap>

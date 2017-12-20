@@ -1,0 +1,21 @@
+@charset "utf-8";
+
+@import "reset.css";
+
+.row{
+	height:30px;
+	line-height:30px;
+	margin:10px 66px;
+	border-bottom:1px dashed #ccc;
+}
+.aui_state_focus .aui_title {
+    color: #2196f3 !important;
+}
+.aui_title {
+    border-bottom: 2px solid #2196f3 !important;
+}
+button.aui_state_highlight {
+    color: #FFF;
+    border: none;
+    background: #2196f3 !important;
+}

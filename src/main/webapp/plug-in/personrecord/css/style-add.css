@@ -1,0 +1,215 @@
+/*智慧社区新增页面css代码*/
+
+table.tab_add td input[type="text"] {
+  width: 260px;
+  margin-bottom: 1px;
+}
+
+table.tab_add td textarea {
+  width: 520px;
+  margin-bottom: 1px;
+}
+
+.progress_img {
+  width: auto;
+  height: 375px;
+  margin: 10px;
+  background-color: #f2f1d7;
+}
+
+.progress_history {
+  width: auto;
+  margin: 10px;
+  border:1px solid #e5e5e5;
+}
+
+.progress_history_title {
+  font-family: "微软雅黑";
+  font-size: 16px;
+  color: #006eff;
+  padding:10px;
+}
+
+.progress_history_list {
+  width: auto;
+  margin:10px;
+}
+
+.jindu_box {
+  width: auto;
+  height: 135px;
+  margin: 10px;
+  background-color: #f2f1d7;
+}
+
+fieldset.fieldset_clearreset {
+  padding: 10px;
+  margin:10px;
+  border:1px solid #cccccc;
+}
+
+fieldset.fieldset_clearreset legend {
+  border-bottom: none;
+  width: auto;
+  font-size: 16px;
+  font-family: "微软雅黑";
+  color: #006eff;
+  margin-left: 30px;
+  margin-bottom: 0px;
+}
+
+.font_blue {
+  font-size: 14px;
+  color: #006eff;
+}
+
+/***
+chrhc TABS  外层TAB页相关样式
+***/
+div.chrhc_tabs_box{
+	margin:5px 10px;
+	border:#e5e5e5 solid 1px;
+	}
+div.chrhc_tabs_box ul.chrhc_tabs{
+	background-color:#f1f1f1;
+	background-image:url(../image/chrhc_tabs_bj.png);
+	border-top:#e5e5e5 solid 1px;
+	border-bottom:none;
+	margin:0px;
+	height:40px;
+	line-height:40px;
+
+}
+
+div.chrhc_tabs_box ul.chrhc_tabs li, div.chrhc_tabs_box ul.chrhc_tabs li a{
+	height:40px;
+	line-height:40px;
+	padding:0px 20px;
+	margin-right:0px;
+	background-image:none;
+	color:#027cbe;
+	border: none;
+	border-right:#e5e5e5 solid 1px;
+	font-weight: 100;
+}
+div.chrhc_tabs_box ul.chrhc_tabs li{padding:0px;}
+
+ul.chrhc_tabs>li.active>a, ul.chrhc_tabs>li.active>a:hover, ul.chrhc_tabs>li.active>a:focus{
+	color:#027cbe !important;
+	border: none !important;
+	border-right:#e5e5e5 solid 1px !important;
+	background-image:none;
+	background-color:#fff;
+}
+div.chrhc_tabs_box .tab-pane{padding:5px 15px;}
+
+
+.chrhc_legend_but{
+	padding:3px 55px;
+	color:#666;  
+}
+div.chrhc_label_div{
+	padding: 10px 0px;
+	height: 25px;
+	color:#666;  
+}
+div.chrhc_label_div label{ 
+	float:left;
+	margin:0px 15px;
+}
+div.chrhc_label_div input[type="radio"]{margin:0px 1px;}
+div.chrhc_input_div input[type="text"]{margin-bottom:0px;}
+div.chrhc_input_div div.tabs_btn_div{ 
+	float:none; 
+	display:inline-block;
+	margin:0px 15px;
+	color:#666;  
+}
+div.chrhc_input_div, table.table td{color:#666;}
+div.chrhc_input_div red{ color:#F00;}
+div.but_input_div{ 
+	margin:10px auto; 
+	width:290px;
+}
+div.but_input_div  input[type="button"]{
+	padding:7px 15px;
+	margin:0 5px;
+	color:#2196f3;
+	font-family: "微软雅黑";
+}
+/*** div.but_input_div  input[type="button"]:hover,***/
+div.but_input_div .but_Selected{
+	background-image:none;
+	background-color:#2196f3;
+	color:#fff !important;
+}
+
+input.btn_01{
+    width: 81px;
+    height: 32px;
+    background: #fff url(../image/but_bj.png) no-repeat 0px 0;
+}
+input.btn_02{
+    width: 81px;
+    height: 32px;
+    background: #fff url(../image/but_bj.png) no-repeat -91px 0;
+}
+input.btn_03{
+    width: 81px;
+    height: 32px;
+    background: #fff url(../image/but_bj.png) no-repeat -181px 0;
+}
+
+
+
+
+/**
+人口履历表格相关代码
+**/
+div.rk_tab_div table{
+	width:820px;
+	text-align:center;
+	margin:10px;
+}
+div.rk_tab_div table td{
+	border: #97d0fd solid 2px;
+	padding:5px 10px;;
+	color:#014ea0;
+}
+
+div.rk_tab_div table th{
+	border: #97d0fd solid 2px;
+	background: #fff url(../image/th_bj.jpg);
+	color:#FFF;
+	height:50px;
+	line-height:50px;
+	font-size:18px;
+}
+td.shrink_td{cursor:pointer;}
+td.shrink_td .fa{ 
+	float:left;
+	margin-left:10px;
+}
+table tr.even_tr {
+	background-color:#c8e8f7;
+}
+.w_100{
+	width:100px;
+}
+div.rk_tab_div table td.h_t{
+	width:820px;
+	display: none;
+}
+.rk_tab_div .lay_i{
+	float:right;
+	cursor:pointer;
+	margin-left:-30px;
+}
+.history-date ul{
+	margin:0px;
+}
+#demo10{
+	overflow-y:auto;
+	height:500px;
+	width:375px;
+}

@@ -1,0 +1,1166 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>基于4A API(API4)的DEMO(最后更新:110525)</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=8" />
+
+    <script type="text/javascript" src="js/Library.js"></script>
+
+    <script type="text/javascript">
+        /*
+        为了让各位同事本地调试，本演示中的地图图片、栅格JS等公共数据存放于 http://61.164.37.195:8002/cityresource   http://cpic.edushi.com
+        本示例基于4A API（API4），地图对象属性，初始化工作已在API中完成，所以基于API的开发直接使用API中返回给你的地图对象即可。
+        一般来说，你需要掌握创建图层，往图层上添加Entity，绘多边形/折线；在地图各个对外事件里完成自己的逻辑；各类控制开关以及常用的测距等方法的调用；
+        本示例中几乎列举了所有的地图事件，右下角的Trace追踪窗口，记录每个事件在何时触发，有哪些可用参数，希望对你有用。
+        
+        二次开发中经常涉及的大量的'泡泡'(Entity)，查询结果列表显示等，AladdinMap5.1平台中已有一整套'控件思想'，请参阅5.1的代码。
+        */
+        /*
+        更新历史：
+        [2011-04-20] DEMO第一版
+        [2011-05-03] 增加地图选圆插件的使用DEMO
+        */
+        var vM, vMe;
+        var roadTip;
+        var customTip;
+        function InitMap() {
+            Trace("- API初始化完毕，获得创建完毕的地图对象，赋给vM,vMe，方便后续调用");
+            vM = vEdushiMap;
+            vMe = veyeEdushiMap;
+
+            //创建各类图层，二次开发往地图上加东西的'容器'
+            _LineLayer = vM.NewMapLayer('LineLayer', 270, true);
+            Trace("- 测试线图层(LineLayer)创建完成");
+
+            _PolyLayer = vM.NewMapLayer('PolyLayer', 271, true);
+            Trace("- 测试多边形图层(PolyLayer)创建完成");
+
+            _CircleLayer = vM.NewMapLayer('CircleLayer', 271, true);
+            Trace("- 测试圆形图层(CircleLayer)创建完成");
+
+            vM.LoadPlug('GoogleMap');//GoogleMap作为一个外置的一个插件，默认是没合并到内核中的，所以以LoadPlug方式加载
+            Trace("- 载入Google地图插件");
+
+            vM.LoadModule('Circle', function() {//因为把CircleIng，CircleEnd单独定义在了Circle.js中，所以需要在模块加载完毕后再去注册事件
+                vM.attachEvent(AlaMap.KeyWord.EventName.CircleIng, function(x, y, r1, r2, disr1, disr2) {
+                });
+
+                vM.attachEvent(AlaMap.KeyWord.EventName.CircleEnd, function(x, y, r1, r2, disr1, disr2) {
+                    _lastCircle = { X: x, Y: y, R1: r1, R2: r2 };
+                    DrawDragCircle();
+                    Trace(string.Format("[CircleEnd]，[返回]：x:{0},y:{1},r1:{2},r2:{3},disr1:{4},disr2:{5}",
+                                        x,
+                                        y,
+                                        r1,
+                                        r2,
+                                        disr1,
+                                        disr2));
+                });
+            });
+
+            vM.LoadModule('Area', function() {
+                vM.attachEvent(AlaMap.KeyWord.EventName.AreaEnd, function(area, flg) {
+                                       //alert('面积'+area+'平方米');
+                    //area:面积，flg:true->系统执行了stop，false->人工执行了stop
+                    Trace(string.Format("[AreaEnd]，[返回]：area:{0},flg:{1}",
+                    area,flg));
+                });
+            });
+
+            //鹰眼小块的加载
+            var eyeViewer = new AlaMap.Control.Viewer(veyeEdushiMap, vEdushiMap);
+            veyeEdushiMap.Show();
+            Trace("- 鹰眼地图中小块初始显示完毕");
+          
+            //外置模块，拖拽编辑模块例子
+            InitShapeEditor();
+
+            //外置模块，图形池主要用于对放入池中的图形在级别缩放时自动重绘，并带有开窗裁剪选项，以及图形的对外事件接口
+            vM.LoadModule('ShapePool', function () {//图形池模块的两个例子，动态路网，实时路况
+                shapePool = vM.ShapePool;
+                InitDynamicRoads();
+                RealTimeTraffic.Init();
+                Trace('- 图形托管池初始化完成');            
+            });
+
+            //外置模块，批量打点
+            vM.LoadModule('CustomLayerPool', function() {
+                vM.CustomLayerPool.Add('hzeaddress', GetMapLayer('hzeaddress', 2000), GetDataLayer('hzeaddress'), false, { width: 36, height: 36, offsetx: 18, offsety: 18, img: AlaMap.GetScriptLocation() + 'images/custom/eaddress.png' });
+                vM.CustomLayerPool.Add('owner', GetMapLayer('owner', 1999), GetDataLayer('owner'), false, { width: 41, height: 33, offsetx: 7, offsety: 32, img: AlaMap.GetScriptLocation() + 'images/custom/owner.png' });
+                vM.CustomLayerPool.Add('fire', GetMapLayer('fire', 1998), GetDataLayer('fire'), false, { width: 64, height: 64, offsetx: 7, offsety: 32, img: AlaMap.GetScriptLocation() + 'images/custom/fire.png' });
+            });
+
+            //-------------以下目前地图的所有对外事件列表-----------------
+            //主地图与鹰眼联动
+            vMe.attachEvent(AlaMap.KeyWord.EventName.MapMoveEnd, function (x, y, flg) {
+                if (flg == 0) { vM.Center(x, y, true); }
+            });
+
+            vM.attachEvent(AlaMap.KeyWord.EventName.MapMoveEnd, function (x, y, flg) {
+                vMe.Center(x, y, true);
+            });
+
+            vM.attachEvent(AlaMap.KeyWord.EventName.MapZoomChange, function (z, x, y) {
+                vMe.ZoomTo(z, true, x, y);
+            });
+
+            //右键菜单显示事件监视
+            vEdushiMap.attachEvent(AlaMap.KeyWord.EventName.ContextMenuShow, function (wx, wy, px, py, spot, srcElm, srcEntity) {
+                vEdushiMap.ContextMenu.Items['zoomin'].Body.style.display = 'block';
+                vEdushiMap.ContextMenu.Items['zoomout'].Body.style.display = 'block';
+                if (vEdushiMap.Property.Zoom == 0) {
+                    vEdushiMap.ContextMenu.Items['zoomin'].Body.style.display = 'none';
+                }
+                else if (vEdushiMap.Property.Zoom == 9) {
+                    vEdushiMap.ContextMenu.Items['zoomout'].Body.style.display = 'none';
+                }
+                if (spot) {
+                    vEdushiMap.ContextMenu.SetItemCaption(vEdushiMap.ContextMenu.Items['spot'], spot.Name);
+                    vEdushiMap.ContextMenu.Items['spot'].Body.style.display = 'block';
+                    vEdushiMap.ContextMenu.Items['line08'].Body.style.display = 'block';
+                }
+                else {
+                    vEdushiMap.ContextMenu.Items['spot'].Body.style.display = 'none';
+                    vEdushiMap.ContextMenu.Items['line08'].Body.style.display = 'none';
+                }
+            });
+
+            //用户在地图上鼠标按下时触发
+            vM.attachEvent(AlaMap.KeyWord.EventName.MapMouseDown, function (x, y, e) {
+                //Trace("[MapMouseDown]，[返回]：x:" + x + "，y:" + y);
+            });
+
+            //用户在地图上鼠标移动
+            vM.attachEvent(AlaMap.KeyWord.EventName.MapMouseMove, function (x, y, e) {
+                //Trace("[MapMouseMove]，[返回]：x:" + x + "，y:" + y);
+            });
+
+            //用户在地图上鼠标移动
+            vM.attachEvent(AlaMap.KeyWord.EventName.MapMouseMove, function (x, y, e) {
+				window.status='X:'+x+',Y:'+y;
+                //Trace("[MapMouseMove]，[返回]：x:" + x + "，y:" + y);
+            });
+
+            //用户鼠标移动出地图范围
+            vM.attachEvent(AlaMap.KeyWord.EventName.MapMouseOut, function (e) {
+                //Trace("[MapMouseOut]，[返回]：无返回值");
+            });
+
+            //自定义图层图标点击事件
+            vM.attachEvent(AlaMap.KeyWord.EventName.CustomLayerItemClick, function (item) {
+                alert('Name:' + item.Name + '，Group:' + item.Group + '，Cx:' + item.Cx + '，Cy:' + item.Cy);
+            });
+
+            //地图级别变化前a
+            vM.attachEvent(AlaMap.KeyWord.EventName.MapZoomBeforeChange, function (newzoom, oldzoom) {
+                Trace("[MapZoomBeforeChange]，[返回]：当前zoom，值:" + oldzoom + '新zoom,值：' + newzoom);
+            });
+
+            //地图窗口尺寸变化
+            vM.attachEvent(AlaMap.KeyWord.EventName.MapZoomChange, function (zoom) {
+                Trace("[MapZoomChange]，[返回]：当前zoom，值:" + zoom);
+            });
+            
+            //地图窗口尺寸变化
+            vM.attachEvent(AlaMap.KeyWord.EventName.MapResize, function (width, height) {
+                Trace("[MapResize]，[返回]：width:" + width + "，height:" + height);
+            }, []);
+
+            //地图窗口中心点变化
+            vM.attachEvent(AlaMap.KeyWord.EventName.MapMovIng, function (x, y, flg) {
+                //Trace("[MapMovIng]，[返回]：x:" + x + "y:" + y+"flg:"+flg);
+            });
+
+            //地图窗口中心点变化结束
+            vM.attachEvent(AlaMap.KeyWord.EventName.MapMoveEnd, function (x, y, flg) {
+                //Trace("[MapMovIng]，[返回]：x:" + x + "y:" + y + "flg:" + flg);
+            });
+
+            //用户在地图上单击
+            vM.attachEvent(AlaMap.KeyWord.EventName.MapClick, function (x, y, e) {
+                Trace("[MapClick]，[返回]：x:" + x + "y:" + y);
+            });
+
+            //用户点击Spot
+            vM.attachEvent(AlaMap.KeyWord.EventName.SpotClick, function (spot) {
+                Trace(string.Format("[SpotClick]，[返回]：spot->ID:'{0}',Name:'{1}',Lx:{2},Ly:{3},Cx:{4},Cy:{5},Group:'{6}'",
+                    spot.ID,
+                    spot.Name,
+                    spot.Lx,
+                    spot.Ly,
+                    spot.Cx,
+                    spot.Cy,
+                    spot.Group));
+            });
+
+            //用户点击了Spotlabel
+            vM.attachEvent(AlaMap.KeyWord.EventName.SpotLabelClick, function (spot) {
+                Trace(string.Format("[SpotLabelClick]，[返回]：spot->ID:'{0}',Name:'{1}',Lx:{2},Ly:{3},Cx:{4},Cy:{5},Group:'{6}'",
+                    spot.ID,
+                    spot.Name,
+                    spot.Lx,
+                    spot.Ly,
+                    spot.Cx,
+                    spot.Cy,
+                    spot.Group));
+            });
+
+            //Spotlabel加载时
+            vM.attachEvent(AlaMap.KeyWord.EventName.AppendSpotLabel, function (spot) {
+                Trace(string.Format("[AppendSpotLabel]，[返回]：spot->ID:'{0}',Name:'{1}',Lx:{2},Ly:{3},Cx:{4},Cy:{5},Group:'{6}'",
+                    spot.ID,
+                    spot.Name,
+                    spot.Lx,
+                    spot.Ly,
+                    spot.Cx,
+                    spot.Cy,
+                    spot.Group));
+            });
+
+            //用户点击了Sign
+            vM.attachEvent(AlaMap.KeyWord.EventName.SignClick, function (sign) {
+                Trace(string.Format("[SignClick]，[返回]：sign->ID:'{0}',Name:'{1}',Lx:{2},Ly:{3},Cx:{4},Cy:{5},Group:'{6}'",
+                    sign.ID,
+                    sign.Name,
+                    sign.Lx,
+                    sign.Ly,
+                    sign.Cx,
+                    sign.Cy,
+                    sign.Group));
+            });
+
+            //用户点击了Plot
+            vM.attachEvent(AlaMap.KeyWord.EventName.PlotClick, function (plot) {
+                Trace(string.Format("[PlotClick]，[返回]：plot->ID:'{0}',Name:'{1}',Lx:{2},Ly:{3},Cx:{4},Cy:{5},Group:'{6}'",
+                    plot.ID,
+                    plot.Name,
+                    plot.Lx,
+                    plot.Ly,
+                    plot.Cx,
+                    plot.Cy,
+                    plot.Group));
+            });
+
+            //用户在地图上双击
+            vM.attachEvent(AlaMap.KeyWord.EventName.MapDblClick, function (x, y, e) {
+                Trace(string.Format("[MapDblClick]，[返回]：x:{0},y:{1}",
+                    x,
+                    y));
+                if (vEdushiMap.Property.Zoom > 0) {
+                    var point = vM.Coordinate.Map2EGIS(vM.iMapPointer);
+                    x = (vM.iEGISCenter.X - point.X);
+                    y = (vM.iEGISCenter.Y - point.Y);
+                    vM.ZoomTo(0, true, x, y);
+                }
+                else {
+                    vM.Center(vM.PointerX(), vM.PointerY(), true);
+                    vMe.Center(vM.PointerX(), vM.PointerY(), true);
+                }
+            });
+
+            //取点操作进行中
+            vM.attachEvent(AlaMap.KeyWord.EventName.GetCoordsIng, function (coords) {
+                Trace(string.Format("[GetCoordsIng]，[返回]：coords:{0}",
+                    coords.toString()));
+            });
+
+            //取点操作结束
+            vM.attachEvent(AlaMap.KeyWord.EventName.GetCoordsEnd, function (coords, flg) {
+                Trace(string.Format("[GetCoordsEnd]，[返回]：coords:{0}", coords.toString()));
+            });
+
+            //测距取点操作进行中
+            vM.attachEvent(AlaMap.KeyWord.EventName.ScaleIng, function (coords) {
+                Trace(string.Format("[ScaleIng]，[返回]：coords:{0}",
+                        coords.toString()
+                    ));
+            });
+
+            //测距取点操作结束
+            vM.attachEvent(AlaMap.KeyWord.EventName.ScaleEnd, function (distance, flg) {
+                Trace(string.Format("[ScaleEnd]，[返回]：distance:{0},flg:{1}",
+                    distance,
+                    flg
+                ));
+            });
+
+            //拉框操作结束
+            vM.attachEvent(AlaMap.KeyWord.EventName.PaneEnd, function (x1, y1, x2, y2, flg) {
+                Trace(string.Format("[PaneEnd]，[返回]：x1:{0},y1:{1},x2:{2},y2:{3},flg:{4}",
+                    x1,
+                    y1,
+                    x2,
+                    y2,
+                    flg
+                    ));
+            });
+
+            //数据栅格加载
+            vM.attachEvent(AlaMap.KeyWord.EventName.DataCellLoad, function (zoom, datalayerid, cella, cellb) {
+                //                Trace(string.Format("[DataCellLoad]，[返回]：zoom:{0},datalayerid:{1},cella:{2},cellb:{3}",
+                //                    zoom,
+                //                    datalayerid,
+                //                    cella,
+                //cellb
+                //                    ));
+            });
+
+            //右键菜单点击
+            vM.attachEvent(AlaMap.KeyWord.EventName.ContextMenuClick, function (menukey, winx, winy, x, y, spot, menuelement, entity) {
+                Trace(string.Format("[ContextMenuClick]，[返回]：menukey:{0},winx:{1},winy:{2},x:{3},y:{4},spot:{5},menuelement:{6},entity:{7}",
+                    menukey,
+                    winx,
+                    winy,
+                    x,
+                    y,
+                    spot,
+                    menuelement,
+                    entity
+                    ));
+            });
+
+            //右键菜单显示
+            vM.attachEvent(AlaMap.KeyWord.EventName.ContextMenuShow, function (winx, winy, x, y, spot, srcelement, entity) {
+                Trace(string.Format("[ContextMenuShow]，[返回]：winx:{0},winy:{1},x:{2},y:{3},spot:{4},srcelement:{5},entity:{6}",
+                    winx,
+                    winy,
+                    x,
+                    y,
+                    spot,
+                    srcelement,
+                    entity
+                    ));
+            });
+
+            //右键菜单隐藏
+            vM.attachEvent(AlaMap.KeyWord.EventName.ContextMenuHide, function (menukey, winx, winy, x, y, spot, menuelement, entity) {
+                Trace(string.Format("[ContextMenuHide]，[返回]：menukey:{0},winx:{1},winy:{2},x:{3},y:{4},spot:{5},menuelement:{6},entity:{7}",
+                    menukey,
+                    winx,
+                    winy,
+                    x,
+                    y,
+                    spot,
+                    menuelement,
+                    entity
+                    ));
+            });
+
+            //切换到三维地图
+            vM.attachEvent(AlaMap.KeyWord.EventName.Switch3D, function (zoom) {
+                Trace("[Switch3D]，[返回]：zoom:" + zoom);
+            });
+
+            //切换到二维地图
+            vM.attachEvent(AlaMap.KeyWord.EventName.Switch2D, function (zoom) {
+                Trace("[Switch2D]，[返回]：zoom:" + zoom);
+            });
+
+            //切换到卫星地图
+            vM.attachEvent(AlaMap.KeyWord.EventName.SwitchWX, function (zoom) {
+                Trace("[SwitchWX]，[返回]：zoom:" + zoom);
+            });
+
+            //图形池中的折线上的文字点击事件
+            vM.attachEvent(AlaMap.KeyWord.EventName.ShapePoolPolyLineTextClick, function (ptext, layerid) {
+                if (layerid == 'dynamicRoadsLayer') {
+                    alert(ptext.Text + '，' + ptext.ID);
+                }
+            });
+
+            //图形池中的折线上的文字鼠标悬浮事件
+            vM.attachEvent(AlaMap.KeyWord.EventName.ShapePoolPolyLineTextMouseMove, function (pline, layerid, e) {
+                if (layerid == 'dynamicRoadsLayer') {
+                    roadTip.Show(vM.Property.TemplateSpotTips, { Name: '名称：' + pline.Text + '，ID：' + pline.ID, Group: 'hotarea' }, e.pageX, e.pageY);
+                }
+            });
+
+            //图形池中的折线上的文字鼠标移出事件
+            vM.attachEvent(AlaMap.KeyWord.EventName.ShapePoolPolyLineTextMouseOut, function (pline, layerid, e) {
+                roadTip.Hide();
+            });
+
+            //图形池中的折线上点击事件
+            vM.attachEvent(AlaMap.KeyWord.EventName.ShapePoolPolyLineClick, function (pline, layerid) {
+                if (layerid == 'dynamicRoadsLayer') {
+                    alert(pline.Text + '，' + pline.ID);
+                } else if (layerid == 'TrafficLayer') {
+                    var statu = pline.Tag.Statu == 0 ? '拥堵' : pline.Tag.Statu == 1 ? '缓慢' : pline.Tag.Statu == 2 ? '通畅' : '无数据';
+                    alert(pline.Tag.RoadName + '-[' + pline.Tag.SName + ']，道路状态：' + statu);
+                }
+            });
+
+            //图形池中的折线上鼠标悬浮事件
+            vM.attachEvent(AlaMap.KeyWord.EventName.ShapePoolPolyLineMouseMove, function (pline, layerid, e) {
+                if (layerid == 'dynamicRoadsLayer') {
+                    roadTip.Show(vM.Property.TemplateSpotTips, { Name: '名称：' + pline.Text + '，ID：' + pline.ID, Group: 'hotarea' }, e.pageX, e.pageY);
+                } else if (layerid == 'TrafficLayer') {
+                    var statu = pline.Tag.Statu == 0 ? '拥堵' : pline.Tag.Statu == 1 ? '缓慢' : pline.Tag.Statu == 2 ? '通畅' : '无数据';
+
+                    roadTip.Show(vM.Property.TemplateSpotTips, { Name: '【' + pline.Tag.RoadName + '：' + pline.Tag.SName + '】，道路状态：' + statu, Group: 'hotarea' }, e.pageX, e.pageY);
+                }
+            });
+
+            //图形池中的折线上鼠标移出事件
+            vM.attachEvent(AlaMap.KeyWord.EventName.ShapePoolPolyLineMouseOut, function (pline, layerid, e) {
+                roadTip.Hide();
+            });
+
+            //地图图形(线，多边形，圆)重绘事件
+            vM.attachEvent(AlaMap.KeyWord.EventName.Repaint, function () {
+                window.status = 'Repaint_' + Math.random();
+                Trace("[Repaint]，重绘事件触发");
+            });
+
+            //----------------------------
+
+            Trace("- 地图事件接口实现完成");
+
+            //下面两个tip（鼠标悬浮时显示文字的控件）用于海量打点和道路状况两个例子时的文字提示
+            roadTip = new AlaMap.Module.SystemTip(vM);
+            customTip = new AlaMap.Module.SystemTip(vM);
+
+            window.onresize();
+            Trace("- 窗口大小调整完成");
+        }
+
+        //重写窗口缩放事件
+        window.onresize = function () {
+            var h = fnGetWindowHeight(), w = fnGetWindowWidth();
+            $('EdushiMap').style.width = (w - 320) + 'px';
+            $('EdushiMap').style.height = (h) + 'px';
+
+            if (vEdushiMap) {
+                vEdushiMap.MapResize(w - 320, h, true);
+            }
+            resizeTraceWindow();
+        };
+    </script>
+    
+    <script type="text/javascript">
+        //------------动态路网(路名跟随测试)------------------
+        var shapePool, dynamicRoadsLayer, regionDrawLayer;
+        var flgRoadsLoaded = false, flgRoadsShow = false;
+        function InitDynamicRoads() {
+            dynamicRoadsLayer = vM.NewMapLayer('dynamicRoadsLayer', 600);
+            regionDrawLayer = vM.NewMapLayer('regionDrawLayer', 600);
+            shapePool.SetLayerOption(dynamicRoadsLayer, true, false);
+            shapePool.SetLayerOption(regionDrawLayer, true, false);
+        }
+        //加载路网(路名跟随)
+        function LoadAllRoads() {
+            if (!flgRoadsLoaded) {//数据未下载
+                ENetwork.DownloadScript('DemoJs/HzRoads.js', function () {//第一次显示动态载入
+                    if (typeof hzroads != 'undefined') {
+                        Trace('- 动态道路开始载入,总数:' + hzroads.length);
+                        for (var i = 0; i < hzroads.length; i++) { //加入形状池托管
+                            //(coords, drawtype, layer, shapestyle, id, text, textstyle)
+                            shapePool.Add(new AlaMap.Module.ShapePool.ShapeData(hzroads[i].Coords, AlaMap.Module.ShapePool.DrawType.PolyLine, dynamicRoadsLayer, {}, null, hzroads[i].Name, {}));
+                        }
+                        shapePool.ShowAll();
+                        flgRoadsLoaded = true;
+                        flgRoadsShow = true;
+                        Trace('- 动态道路载入并显示');
+                    }
+                });
+
+            } else {
+                flgRoadsShow = !flgRoadsShow;
+                shapePool.ViewLayer('dynamicRoadsLayer', flgRoadsShow); //隐藏
+                Trace('- 动态道路' + (flgRoadsShow ? '显示' : '隐藏'));
+            }
+        }
+
+        //画折线根据当前屏幕裁剪
+        function DrawCurrentRegionPolyLine() {
+            vM.attachEvent(AlaMap.KeyWord.EventName.GetCoordsEnd, function (coords) {
+                vM.detachEvent(AlaMap.KeyWord.EventName.GetCoordsEnd, arguments.callee); //使用完后把自己销毁
+                //var id = shapePool.Add(AlaMap.Module.ShapePool.DrawType.PolyLine, regionDrawLayer, {}, [coords.toString()]);
+                var id = shapePool.Add(new AlaMap.Module.ShapePool.ShapeData(coords.toString(), AlaMap.Module.ShapePool.DrawType.PolyLine, regionDrawLayer));
+                shapePool.ShowSingle(id); //状态维护交给图形池来维护
+            });
+            vM.StartGetCoords();
+        }
+
+        //画多边形根据当前屏幕裁剪
+        function DrawCurrentRegionPoly() {
+            vM.attachEvent(AlaMap.KeyWord.EventName.GetCoordsEnd, function (coords) {
+                vM.detachEvent(AlaMap.KeyWord.EventName.GetCoordsEnd, arguments.callee); //使用完后把自己销毁
+                var id = shapePool.Add(new AlaMap.Module.ShapePool.ShapeData(coords.toString(), AlaMap.Module.ShapePool.DrawType.Polygon, regionDrawLayer));
+                shapePool.ShowSingle(id);
+            });
+            vM.StartGetCoords();
+        }
+
+        function ClearRegionDrawLayer() {
+            shapePool.ClearByLayerID('regionDrawLayer');
+        }
+
+        //---------拖拽编辑测试--------------
+        var shapeEditor;
+        function InitShapeEditor() {
+            vM.LoadModule('ShapeEditor', function () {//拖拽编辑模块也是外置的模块，需要动态加载
+                shapeEditor = vM.ShapeEditor;//动态加载完毕后，地图对象上会有一个同模块名的对象，系统约定
+                Trace('- 拖拽编辑模块加载完成');
+                shapeEditor.onStop = function (curline, alllines) {//该事件中一般用于保存编辑后的坐标
+                    var s = curline != null ? '当前正在编辑的图形坐标串：' + curline.GetCoords() : '当前没有正在编辑的图形 ';
+                    s += '\n共有可编辑图形：' + alllines.length + '个';
+                    alert(s);
+                }
+            });
+        }
+        var statuDrawing = ''; //当前正在进行的画图状态
+        //画可编辑的折线
+        function DrawPolyLineEditEnabled() {
+            vM.attachEvent(AlaMap.KeyWord.EventName.GetCoordsEnd, function (coords) {
+                vM.detachEvent(AlaMap.KeyWord.EventName.GetCoordsEnd, arguments.callee); //使用完后把自己销毁
+                var line1 = new AlaMap.Module.ShapeEditor.LineData(coords);
+                var lineid = shapeEditor.Add(line1);
+                shapeEditor.Show(lineid);
+            });
+            vM.StartGetCoords();
+        }
+        //画可编辑的多边形
+        function DrawPolyEditEnabled() {
+            vM.attachEvent(AlaMap.KeyWord.EventName.GetCoordsEnd, function (coords) {
+                vM.detachEvent(AlaMap.KeyWord.EventName.GetCoordsEnd, arguments.callee); //使用完后把自己销毁
+                var line1 = new AlaMap.Module.ShapeEditor.LineData(coords);
+                line1.IsPolyLine = false;
+                var lineid = shapeEditor.Add(line1);
+                shapeEditor.Show(lineid);
+            });
+            vM.StartGetCoords();
+        }
+        //停止编辑，一般用于触发保存事件
+        function StopShapeEdit() {
+            shapeEditor.Stop();
+        }
+
+        //删除选中的编辑图形
+        function RemoveCurrentShape() {
+            if (shapeEditor.Current != null) {
+                shapeEditor.Remove(shapeEditor.Current.ID);
+                alert('成功删除选中图形');
+            } else {
+                alert('请选中要编辑的图形');
+            }
+        }
+
+        //清除所有可编辑图形
+        function ClearShapes() {
+            shapeEditor.Clear();
+            alert('清除所有可编辑图形');
+        }
+        //---------------------------
+
+        var _PopLayer;
+        var _LineLayer;
+        var _PolyLayer;
+
+        function DrawDotTest() {
+            _DotLayer.innerHTML = '';
+            //地图坐标(AlaMap坐标需要转换成相对于盒子的坐标,画poly同理
+            vM.DrawDot(_DotLayer, 18360, 32792, 8, '#ff3300', 0.7);
+            //注册级别切换事，重绘事件
+            vM.detachEvent(AlaMap.KeyWord.EventName.MapZoomChange, DrawDotTest);
+            vM.attachEvent(AlaMap.KeyWord.EventName.MapZoomChange, DrawDotTest);
+        }
+        function DrawLineTest() {
+            var coords = '10436,14228.5,10608,14190.5,10646,14466.5,10190,14468.5';
+            _LineLayer.innerHTML = '';
+
+            //地图坐标(AlaMap坐标需要转换成相对于盒子的坐标,画poly同理
+			//debugger;
+            vM.DrawPolyLine(_LineLayer, coords, 4, '#ff3300', 0.7,'dashdot');
+
+            //注册级别切换事，重绘事件
+            vM.detachEvent(AlaMap.KeyWord.EventName.MapZoomChange, DrawLineTest);
+            vM.attachEvent(AlaMap.KeyWord.EventName.MapZoomChange, DrawLineTest, []);
+
+            vM.detachEvent(AlaMap.KeyWord.EventName.Repaint, DrawLineTest);
+            vM.attachEvent(AlaMap.KeyWord.EventName.Repaint, DrawLineTest);
+
+        }
+
+        function DrawPolyTest() {
+            //window.status = Math.random();
+            var coords = '10436,14228.5,10608,14190.5,10646,14466.5,10190,14468.5,10304,14276.5,10436,14228.5';
+            _PolyLayer.innerHTML = '';
+
+            vM.DrawPoly(_PolyLayer, coords, 1, 'yellow', 'black', 0.7,'dash');
+
+            vM.detachEvent(AlaMap.KeyWord.EventName.MapZoomChange, DrawPolyTest);
+            vM.attachEvent(AlaMap.KeyWord.EventName.MapZoomChange, DrawPolyTest);
+
+            vM.detachEvent(AlaMap.KeyWord.EventName.Repaint, DrawPolyTest);
+            vM.attachEvent(AlaMap.KeyWord.EventName.Repaint, DrawPolyTest);
+
+        }
+        function DrawCircleTest() {
+            _CircleLayer.innerHTML = '';
+            //地图坐标(AlaMap坐标需要转换成相对于盒子的坐标,画poly同理
+            vM.DrawCircle(_CircleLayer, 10126,13926.5, 70, 60, 1, 'yellow', 'black', 0.7);
+            //注册级别切换事，重绘事件
+            vM.detachEvent(AlaMap.KeyWord.EventName.MapZoomChange, DrawCircleTest);
+            vM.attachEvent(AlaMap.KeyWord.EventName.MapZoomChange, DrawCircleTest);
+            vM.detachEvent(AlaMap.KeyWord.EventName.Repaint, DrawCircleTest);
+            vM.attachEvent(AlaMap.KeyWord.EventName.Repaint, DrawCircleTest);
+        }
+
+        //地图选圆插件的使用 
+        var _lastCircle = null; //{X:323,Y:323,R1:2323,R2:3432}
+        var _DragCircleLayer;
+        function DrawDragCircle() {
+
+            if (_lastCircle) {
+                if (!_DragCircleLayer) {
+                    _DragCircleLayer = vM.NewMapLayer('DragCircleLayer', 602);
+                }
+                _DragCircleLayer.innerHTML = '';
+                vM.DrawCircle(_DragCircleLayer, _lastCircle.X, _lastCircle.Y, _lastCircle.R1, _lastCircle.R2, 2, 'yellow', '#ff9966', 0.25);
+                //注册级别切换事，重绘事件
+                vM.detachEvent(AlaMap.KeyWord.EventName.MapZoomChange, DrawDragCircle);
+                vM.attachEvent(AlaMap.KeyWord.EventName.MapZoomChange, DrawDragCircle);
+                vM.detachEvent(AlaMap.KeyWord.EventName.Repaint, DrawDragCircle);
+                vM.attachEvent(AlaMap.KeyWord.EventName.Repaint, DrawDragCircle);
+            }
+        }
+
+        function StartDragCircle() {
+            if (_DragCircleLayer) {
+                _DragCircleLayer.innerHTML = '';
+                _lastCircle = null;
+            }
+            vM.LoadModule('Circle', function() {
+                vM.Circle.StartCircle();
+            });
+
+        }
+
+        function StartMeasureArea() {
+            vM.Area.StartArea();
+        }
+        //---------------------------------
+
+        //------可扩展自定义图层测试-------
+
+        function GetMapLayer(layerid, zIndex) {
+            var _cutomLayerProperty = new AlaMap.MapLayerProperty();
+            _cutomLayerProperty.CellHeight = 256;
+            _cutomLayerProperty.CellWidth = 256;
+            _cutomLayerProperty.zIndex = zIndex;
+            _cutomLayerProperty.visible = true;
+            _cutomLayerProperty.alpha = 0;
+            _cutomLayerProperty.display = false;
+            _cutomLayerProperty.id = layerid;
+            _cutomLayerProperty.GetPicFileName = function (a, b, z) {
+                return 'http://61.164.37.195:8002/cityresource/custom/' + layerid + '/picture/' + (z) + '/' + a + ',' + b + '.png';
+            };
+            return _cutomLayerProperty;
+        }
+
+        function GetDataLayer(layerid) {
+            var _dataProperty = new AlaMap.DataLayerProperty();
+            _dataProperty.id = layerid;
+            _dataProperty.visible = true;
+            _dataProperty.CellHeight = 256;
+            _dataProperty.CellWidth = 256;
+            _dataProperty.GetDataFileName = function (a, b, z) {
+                return 'http://61.164.37.195:8002/cityresource/custom/' + layerid + '/js/' + (z) + '/' + a + ',' + b + '.js';
+            };
+            _dataProperty.RapidLoad = true;
+            return _dataProperty;
+        }
+
+        function LoadCustomLayer(layerid) {
+            if (vM.CustomLayerPool) {
+                vM.CustomLayerPool.Toggle(layerid);
+            }
+        }
+
+        //显示自定义图层数据信息
+        function ShowCustomLayerData() {
+            if (_currentLayerData != null) {
+                alert("分组：" + _currentLayerData.Group + "\n数据内容：\n" + _currentLayerData.Name + "(" + _currentLayerData.ID + ")\n坐标:" + _currentLayerData.Cx + "," + _currentLayerData.Cy);
+            }
+        }
+
+        //载入道路图层
+        var _isShowRoad = false, _isRoadLayerAppended = false;
+        function LoadRoadLayer() {
+            if (!_isRoadLayerAppended) {
+                var v2dMapLayerProperty = new AlaMap.MapLayerProperty();
+                v2dMapLayerProperty.CellHeight = 256;
+                v2dMapLayerProperty.CellWidth = 256;
+                v2dMapLayerProperty.zIndex = 2003;
+                v2dMapLayerProperty.visible = true;
+                _isShowRoad = v2dMapLayerProperty.visible;
+                v2dMapLayerProperty.alpha = 0;
+                v2dMapLayerProperty.display = true;
+                v2dMapLayerProperty.id = 'RoadPicLayer';
+
+                v2dMapLayerProperty.GetPicFileName = function (a, b, z) {
+                    return 'http://cpic2.edushi.com/cn/hz/zh-chs/roadpic/' + z + '/' + a + '/' + b + '.png';
+                };
+
+                vM.AppendMapLayer(v2dMapLayerProperty);
+                _isRoadLayerAppended = true;
+            } else {
+                _isShowRoad = !_isShowRoad;
+                vM.ViewSystemMapLayer(_isShowRoad, 'RoadPicLayer');
+            }
+            Trace('- 道路图层状态->>' + (_isShowRoad ? "显示" : "隐藏"));
+        }
+        //---------------------------------
+
+        //-----------坐标相关--------------
+        //屏幕四角坐标
+        function GetRegionBound() {
+            var arrCoords = vM.GetMapPosCurrentRegion();
+            alert(string.Format("当前屏幕四角坐标：\n左上角：{0},{1}\n右上角：{2},{3}\n右下角：{4},{5}\n左下角：{6},{7}",
+            arrCoords[0].X, arrCoords[0].Y,
+            arrCoords[1].X, arrCoords[1].Y,
+            arrCoords[2].X, arrCoords[2].Y,
+            arrCoords[3].X, arrCoords[3].Y));
+        }
+
+        function GetRegionData() {
+            var arrCoords = vM.GetMapPosCurrentRegion();
+            //getSysGroupRegionDatasDatas: function(sysGroupType, zoom, x1, y1, x2, y2) {//给定坐标范围返回指定级别的某一系统对象数据分组的数据
+            var datas = vM.DataPool.getGroupRegionDatas("hotarea", vM.Zoom(), arrCoords[0].X, arrCoords[0].Y, arrCoords[2].X, arrCoords[2].Y);
+            var list = '当前屏幕总量：' + datas.length + '\r\n';
+            for (var i = 0; i < datas.length; i++) {
+                var obj = datas[i];
+                list += string.Format('ID:{0},Name:{1},Cx:{2},Cy:{3}\r\n', obj.ID, obj.Name, obj.Cx, obj.Cy);
+            }
+            alert(list);
+        }
+
+        function TestEPoint2ELatLng() {
+            var _latlng = vM.EPoint2ELatLng(new AlaMap.Point(vM.CenterX(), vM.CenterY())); //Edushi坐标转换成经纬度坐标，这里面用到了GLatLng这个在google map里定义的经纬度对象，所以要在二维或者卫星图下可用，下同
+            alert(string.Format("当前屏幕中心点：{0},{1}\n转换结果如下：\n纬度：{2}，经度：{3}", vM.CenterX(), vM.CenterY(), _latlng.lat(), _latlng.lng()));
+        }
+
+        function TestEpointXYFromLatLng() {//经纬度坐标转换成Edushi坐标
+            var lat = 31.982303445718415;
+            var lng = 120.8935850330721;
+            var epoint = vM.ELatLng2EPoint(new AlaMap.LatLng(lat, lng));
+            alert(string.Format("经纬度：{0},{1}\n转换结果如下：\n{2},{3}", lat, lng, epoint.X, epoint.Y));
+        }
+        //---------------------------------
+        function ToggleViewSpotLabels() {
+            //参数：(state, groupName, flg)，这里拿我们的热区做测试
+            Trace('- 热区标签状态->>' + (vM.Property.VisibleSpotLabels['hotarea'] ? "关闭" : "开启"));
+            vM.ViewSpotLabels(!vM.Property.VisibleSpotLabels['hotarea'], 'hotarea');
+        }
+
+        function ToggleViewSpotAreas() {
+            Trace('- 热区状态->>' + (vM.Property.VisibleSpotAreas['hotarea'] ? "关闭" : "开启"));
+            vM.ViewSpotAreas(!vM.Property.VisibleSpotAreas['hotarea'], 'hotarea');
+        }
+
+        function ToggleStation() {
+            Trace('- 公交站牌状态->>' + (vM.Property.VisibleSigns['bus'] ? "关闭" : "开启"));
+            vM.ViewSigns(!vM.Property.VisibleSigns['bus'], 'bus');
+        }
+
+        function TogglePark() {
+            Trace('- 停车场状态->>' + (vM.Property.VisibleSigns['park'] ? "关闭" : "开启"));
+            vM.ViewSigns(!vM.Property.VisibleSigns['park'], 'park');
+        }
+
+        function TogglePlot() {
+            Trace('- 广告状态->>' + (vM.Property.VisiblePlots['ad'] ? "关闭" : "开启"));
+            vM.ViewPlots(!vM.Property.VisiblePlots['ad'], 'ad');
+        }
+
+        var _entityLayer;
+        var _entityNames = ['肯德基', '麦当劳', '必胜客', '蒸味豪', '米宝宝', '老娘舅', '丁哥黑鱼', '外婆家', '新龙宫', '碗柜'];
+        for (var i = 0; i < 100; i++) {
+            _entityNames.push(i + 'test');
+        }
+        //在当前屏幕内随机放几个entity
+        function AppendTestEntitys() {
+            if (!_entityLayer) {
+                _entityLayer = vM.NewMapLayer('entityLayer', 601);
+            }
+            _entityLayer.innerHTML = '';
+            var arrBounds = vM.GetMapPosCurrentRegion(); //左上，右上，右下，左下
+            for (var i = 0; i < _entityNames.length; i++) {
+                var _x = Math.floor(Math.random() * (arrBounds[2].X - arrBounds[0].X + 1) + arrBounds[0].X);
+                var _y = Math.floor(Math.random() * (arrBounds[2].Y - arrBounds[0].Y + 1) + arrBounds[0].Y);
+                _AppendSingleTestEntity(_x, _y, _entityNames[i], 'en_' + i);
+            }
+            alert('成功在当前屏幕内放了' + _entityNames.length + '个entity');
+        }
+
+        function _AppendSingleTestEntity(x, y, name, id) {
+            var p = vM.$C('div');
+            p.innerHTML = string.Format('<span title="{1}"  style="padding:5px;border:2px solid red;font-size:12px;font-weight:bold;background-color:#fff;">{1}</span>', id, name);
+            p.id = id;
+            //参数：(o, layer, autoresize, x, y, w, h, exX, exY, candrag, autoremove, autozoomchangeremove)
+            var a = vM.AppendEntity(p, _entityLayer, false, x, y, 70, 30, 0, 0, false, false, false);
+            //alert(a);       
+        }
+
+        function DeleteTestEntity() {
+            var id = 'en_0';
+            if (vM.$(id)) {
+                vM.RemoveEntity(id);
+                alert('移除测试Entity(' + _entityNames[0] + ')成功');
+            }
+            else {
+                alert('Entity不存在');
+            }
+        }
+
+        //----------基本操作-------------------
+        //定位
+        function AnchorTest() {
+            var _x = vM.CenterX() + 500;
+            var _y = vM.CenterY() + 600;
+            vM.MoveTo(_x, _y, true);
+        }
+
+        //缩放方式 flg:true->以鼠标位置为中心
+        function ToggleZoomByMousePostion(flg) {
+            vM.Property.flgZoomTip = flg;
+            alert('当前地图将以【' + (flg ? '鼠标所在位置' : '屏幕') + '】为中心缩放');
+        }
+
+
+        //----------动态加载控件/模块-----------
+
+        var refrenceSystem;
+        var flgRefrenceShow = false;
+        function InitRefrencePoint() {
+            if (!refrenceSystem) {
+                refrenceSystem = new AlaMap.Module.RefrenceSystem(vM);
+            }
+            var testPoints = [{ X: 21864, Y: 25317, Text: '杭州大厦', ID: 'hzdasha' },
+            { X: 15755, Y: 14613, Text: '阿拉丁', ID: 'aladdin' },
+            { X: 12953, Y: 21609, Text: '黄龙体育中心', ID: 'huanglong' },
+            { X: 26826, Y: 37267, Text: '市民中心', ID: 'citycenter' },
+            {X: 12882, Y: 31438, Text: '吴山广场', ID: 'wushan' },
+            { X: 26402, Y: 30417, Text: '杭州红十字会医院', ID: 'honghui' },
+            {X: 7244, Y: 12991, Text: '西城广场', ID: 'xicheng' },
+            { X: 21862, Y: 9259, Text: '汽车北站', ID: 'qichebeizhan'}];
+            //{ X: 19790, Y: 17501, Text: '百瑞国际大酒店', ID: 'bairuiguoji' },
+            //{ X: 11281, Y: 30039, Text: '柳浪闻莺', ID: 'liulang' },
+            //{X: 27323, Y: 34253, Text: '邵逸夫医院', ID: 'yifu' },
+            //{ X: 15156, Y: 38879, Text: '浙江省杭州市中级人民法院', ID: 'renminfayuan' },
+            //{ X: 29343, Y: 13829, Text: '京杭大运河博物馆', ID: 'jinghangyunhe' },
+            //{ X: 24883, Y: 8763, Text: '杭州国际会展中心', ID: 'guojihuizhan'}];
+            vM.attachEvent(AlaMap.KeyWord.EventName.RefrencePointClick, function (point, e) {
+                vM.MoveTo(point.X, point.Y, true);
+            });
+            for (var i = 0; i < testPoints.length; i++) {
+                var point = refrenceSystem.Add(testPoints[i].X, testPoints[i].Y, testPoints[i].Text, testPoints[i].ID);
+            }
+            refrenceSystem.ShowAll();
+        }
+
+        //开关动态参考点        
+        function ToggleRefrencePoint() {
+          
+            if (!refrenceSystem) {
+                InitRefrencePoint();
+                flgRefrenceShow = true;
+            }
+            else {
+                if (flgRefrenceShow) {
+                    refrenceSystem.Clear();
+                    flgRefrenceShow = false;
+                } else {
+                    refrenceSystem.ShowAll();
+                    flgRefrenceShow = true;
+                }
+            }
+        }
+
+        //移除某参考点
+        function RemoveRefrencePoint() {
+            if (!refrenceSystem) {
+                alert('参考点模块未初始化');
+                return false;
+            }
+            refrenceSystem.Remove('huanglong');
+            alert('移除成功');
+        }
+
+
+        //------------实时路况---------------
+        /*		
+        - 顺畅 2
+        - 缓慢 1
+        - 拥堵 0
+        - 无数据 -1
+        */
+        var RealTimeTraffic = {};
+        var _TrafficLayer;
+        var _IsTrafficLoad = false;
+        RealTimeTraffic.Init = function () {
+            _TrafficLayer = vM.NewMapLayer('TrafficLayer', 280, true);
+            shapePool.SetLayerOption(_TrafficLayer, true, false);
+        };
+
+        RealTimeTraffic._GetShapeStyle = function (statu) {
+            var color = statu == 0 ? 'red' : statu == 1 ? 'yellow' : statu == 2 ? 'green' : '#ccc';
+            return { Size: 7, StrokeColor: color, Opacity: 0.5 };
+        };
+
+        var flgTrafficLoaded = false, flgTrafficShow = false;
+        //加载路况
+        function ToggleTraffic() {
+            if (!flgTrafficLoaded) {//数据未下载
+                //debugger;
+                ENetwork.DownloadScript('DemoJs/TrafficData.js?rnd=' + Math.random(), function () {//第一次显示动态载入
+                    if (typeof _TrafficDatas != 'undefined') {
+                        for (var i = 0; i < _TrafficDatas.length; i++) {
+                            var segments = _TrafficDatas[i].Segments;
+                            for (var j = 0; j < segments.length; j++) {
+
+                                var segobj = new AlaMap.Module.ShapePool.ShapeData(segments[j].Coords, AlaMap.Module.ShapePool.DrawType.PolyLine, _TrafficLayer, RealTimeTraffic._GetShapeStyle(segments[j].Statu));
+                                segments[j].RoadName = _TrafficDatas[i].Name;
+                                segobj.Tag = segments[j];
+                                shapePool.Add(segobj);
+                            }
+                        }
+                        shapePool.ShowLayerAll('TrafficLayer');
+                        flgTrafficLoaded = true;
+                        flgTrafficShow = true;
+                    }
+                });
+
+            } else {
+                flgTrafficShow = !flgTrafficShow;
+                shapePool.ViewLayer('TrafficLayer', flgTrafficShow); //隐藏
+            }
+        }
+        
+    </script>
+    
+    <style type="text/css">
+        body
+        {
+        	font-size:12px;            	
+        }
+         
+        .divPanel
+        {
+            margin-bottom:5px;
+            border:solid 1px #d3d3d3;
+            
+        }
+        
+        .divPanel .divTitle
+        {
+            background-color:#f7f7f7;
+            height:22px; 
+            line-height:22px;
+            font-weight:bold;
+        }
+        
+        .divPanel .divBody
+        {
+            border-top:solid 1px #d3d3d3; 
+            height:130px;
+            line-height:30px;
+            padding:3px;
+        }
+        
+        .divBody span
+        {
+            padding:2px 10px;            
+            border:solid #eee 1px; 
+            display:inline;   
+            cursor:pointer; 
+        }
+        
+        .spNewFeature
+        {
+            border:solid #e8db97 1px;  
+            /*color:#ffaed9;*/
+            color:green;
+        }
+        
+    </style>
+</head>
+<body style="margin:0" onload="InitMap();">
+    
+    <div id="EdushiMap"></div>
+    <div id="eyeEdushiMap" style="position:absolute; bottom:0px; right:330px; bottom:10px"></div>
+    
+    <!--操作按钮开始-->
+    <div id="divToolPanel" style="width:300px; height:560px; border-bottom:solid 1px #ccc; overflow-y:scroll; position:absolute; right:10px; top:5px; z-index:9999">
+        
+   <div class="divPanel" style="height:205px;">
+         
+            <div class="divTitle">&nbsp;<b>- 基础操作</b><a href="更新历史.txt" target="_blank" style="text-decoration:none;"><span style="color:#ccc; margin-left:60px;font-weight:normal; cursor:pointer;" title="查看">[查看更新历史]</span></a></div>
+            <div class="divBody">
+                <span onclick="vM.StartPane();">拉框</span>
+                <span class="spNewFeature" onclick="StartDragCircle();">地图选圆</span>
+                <span onclick="vM.StartScale()">测距</span>
+                <span class="spNewFeature" onclick="vM.Area.StartArea();">测面</span>
+                 <span onclick="AnchorTest();">定位</span>
+                <br />
+                <span style="border:0px;">测算方式>></span>
+                <a href="javascript:vM.Property.MeasureType=0;alert('已设置为:[作图像素比]模式');" title="设置" style="text-decoration:none;color:#ccc;">作图像素比</a>&nbsp;
+                <a href="javascript:vM.Property.MeasureType=1;alert('已设置为:[经纬度]模式');" title="设置" style="text-decoration:none;color:#ccc;">经纬度</a>&nbsp;
+                <a href="javascript:vM.Property.MeasureType=2;alert('已设置为:[大地]模式');" title="设置" style="text-decoration:none;color:#ccc;">大地</a>
+                 <br />
+                <span onclick="ToggleZoomByMousePostion(false);">以屏幕中心缩放</span>
+                <span onclick="ToggleZoomByMousePostion(true);" class="spNewFeature">以鼠标点缩放</span>
+                <span onclick="ToggleViewSpotAreas();">开关热区</span>
+                <span onclick="ToggleViewSpotLabels();">开关标签</span>
+                <span onclick="ToggleStation();">开关站牌</span>
+                <span onclick="TogglePark();">开关停车场</span>
+                <span onclick="TogglePlot();">开关广告</span><br />
+                <span onclick="AppendTestEntitys();">添加Entity</span>    
+                <span onclick="DeleteTestEntity();">移除Entity</span>  
+            </div>
+            
+        </div>    
+        
+        <div class="divPanel" style="height:130px; display:none;">
+            <div class="divTitle">&nbsp;<b>- Spot/Sign/Plot/Entity相关</b></div>
+            <div class="divBody">
+                <span onclick="ToggleViewSpotAreas();">开关热区</span>
+                <span onclick="ToggleViewSpotLabels();">开关标签</span>
+                <span onclick="ToggleStation();">开关站牌</span><br />
+                <span onclick="TogglePark();">开关停车场</span>
+                <span onclick="TogglePlot();">开关广告</span>
+                <!--<span>当前屏数据</span><br />--><br />
+                <span onclick="AppendTestEntitys();">添加Entity</span>    
+                <span onclick="DeleteTestEntity();">移除Entity</span>      
+            </div>            
+        </div>   
+
+
+       <div class="divPanel" style="height:240px;">
+            <div class="divTitle">&nbsp;<b>- 绘图相关</b></div>
+            <div class="divBody">
+                <span onclick="vM.MoveTo(10436,14228.5);DrawLineTest();">画线</span>
+                <span onclick="DrawPolyTest();vM.MoveTo(10436,14228.5);">画多边形</span>
+                <span onclick="DrawCircleTest();vM.MoveTo(10126,13926.5);">画圆</span>  
+                <span onclick="ClearRegionDrawLayer();">清除裁剪</span>  
+                              
+                <br />
+                <span class="spNewFeature" onclick="DrawCurrentRegionPolyLine();" >画当前屏折线,超出裁剪</span>
+                <span class="spNewFeature" onclick="DrawCurrentRegionPoly();">画当前屏多边形,,超出裁剪</span>
+                
+                <span class="spNewFeature" onclick="DrawPolyLineEditEnabled();">画可编辑线段</span>
+                <span class="spNewFeature" onclick="DrawPolyEditEnabled();">画可编辑多边形</span><br />
+                <span class="spNewFeature" onclick="StopShapeEdit();">保存编辑结果</span>
+                <span class="spNewFeature" onclick="RemoveCurrentShape();">删除选中项</span>
+                <br />
+                <span title="绘制当前屏幕道路，路名跟随。" class="spNewFeature" onclick="LoadAllRoads();">开关动态路网，路名跟随</span>   
+                <br />  
+                <span class="spNewFeature" onclick="javascript:ToggleTraffic();">开关道路状况</span>&nbsp;<a href="javascript:void(0);" onclick="vM.MoveTo(17790,17029);" style="color:#ccc;">定位有路况区域</a>
+                <br />
+                <span class="spNewFeature" onclick="ToggleRefrencePoint();">开关动态参考点</span>
+                <span class="spNewFeature" style="display:none;" onclick="RemoveRefrencePoint();">移除某参考点</span>
+            </div>
+        </div> 
+        
+        <div class="divPanel" style="height:100px;">
+            <div class="divTitle">&nbsp;<b>- 坐标相关</b></div>
+            <div class="divBody">
+                <span onclick="GetRegionBound();">屏幕四角坐标</span>
+                <span onclick="GetRegionData();">当前屏数据获取</span>
+                <br />
+                <span onclick="TestEPoint2ELatLng();">E都市坐标转经纬度</span>
+                <span onclick="TestEpointXYFromLatLng();">经纬度转E都市坐标</span><br />  
+                
+            </div>
+        </div>     
+        
+        <div class="divPanel" style="height:130px;">
+            <div class="divTitle">&nbsp;<b>- 图层相关</b></div>
+            <div class="divBody">
+                <span onclick="LoadRoadLayer();">开关道路图层</span>
+                <div >
+                    “海量打点”示例：<span class="spNewFeature" onclick="LoadCustomLayer('hzeaddress');">开关网友E地址泡泡</span>
+                    <br />
+                    <span class="spNewFeature" onclick="LoadCustomLayer('owner');">开关实体泡泡</span>
+                    <span class="spNewFeature" onclick="LoadCustomLayer('fire');">开关主题泡泡</span>   
+                    <span class="spNewFeature" style="display:none;" onclick="LoadCustomLayer('epolice');">开关电子警察</span> 
+                </div>                          
+            </div>            
+        </div>   
+        
+        
+        <div style="padding:10px; border:dashed 1px #ccc;">
+            <a href="javascript:vM.MoveTo(15755,14613);">定位到阿拉丁</a>&nbsp;
+        </div>    
+              
+    </div>       
+    <!--操作按钮结束-->
+    
+    <!--调试窗口开始-->
+    <div class="divPanel" style="position:absolute; bottom:2px; right:10px;width:300px;z-index:999999" >
+        <div class="divTitle"  id="divTraceTitle"  style="background:#ffd; height:23px; line-height:23px;">
+            &nbsp;<b>[调试窗口]</b>
+            <span id="Span1" style="cursor:pointer; font-weight:normal; position:absolute;right:45px; padding-bottom:4px; color:red;" onclick="ClearTraceContent();">[清内容]</span>
+            <span id="spMaxMin" style="cursor:pointer; font-weight:normal; position:absolute;right:5px; padding-bottom:4px; color:red;" onclick="toggleTraceWindow();">[关闭]</span>
+        </div>
+        <div id="divTraceBody" style="display:none; height:290px; background:#fff;">    
+            <iframe frameborder="0" scrolling="no"  src="Trace.html" width="100%" id="fraTrace"></iframe>
+        </div>
+    </div>
+    <!--调试窗口结束-->
+
+</body>
+</html>
+
+<!--API可用参数详见"AlaMap4A API说明.doc"-->
+<!--script type="text/javascript" src="http://61.164.37.195:8002/?mapid=EdushiMap&city=hz&w=800&x=7050&y=12866&eye=true&e=utf-8&z=1&v=0&zb=true&s=true"></script-->
+<script type="text/javascript" src="http://APIInKey.alayun.net/?mapid=EdushiMap&city=nantong_ntdemo&w=800&x=11894&y=14420&eye=true&e=gb2312&z=1&v=2&zb=true&s=true"></script>
+
+
+<script type="text/javascript">
+    //工具菜单控制
+    function toggleTraceWindow(statu) {
+        var flg;
+        if (statu == undefined) {
+            flg = $('divTraceBody').style.display == 'none';
+        } else {
+            flg = statu;
+        }
+
+        var h = fnGetWindowHeight();
+        if (flg) {//切换到显示状态
+            $('divTraceBody').style.display = 'block';
+            var toolPanelHeight = h - 305 - 50;
+            $('divToolPanel').style.height = (toolPanelHeight < 60 ? 60 : toolPanelHeight) + 'px';
+            $('spMaxMin').innerHTML = '[关闭]';
+            $('fraTrace').height = 290 + 'px';
+            $('fraTrace').style.display = 'block';
+            $('fraTrace').contentWindow.document.getElementById('divTest').style.height = 275 + 'px';
+            flgTraceStatu = true;
+        } else {
+            $('divTraceBody').style.display = 'none';
+            $('divToolPanel').style.height = (h - 50) + 'px';
+            $('spMaxMin').innerHTML = '[启用]';
+            $('fraTrace').style.display = 'none';
+            flgTraceStatu = false;
+        }
+    }
+    function resizeTraceWindow() {
+        var flg = $('divTraceBody').style.display == 'none';
+        toggleTraceWindow(flg);
+    }
+    //调试窗口控制
+    var fraTrace = document.getElementById('fraTrace');
+    var flgTraceStatu = true;
+    function Trace(str) {
+        if (flgTraceStatu) {
+            fraTrace.contentWindow.TraceForm.Write(str);
+        }
+    }
+
+    function ClearTraceContent() {
+        fraTrace.contentWindow.TraceForm.Clear();
+        fraTrace.contentWindow.TraceForm.Write('跟踪记录已清除');
+    }
+</script>

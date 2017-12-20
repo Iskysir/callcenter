@@ -1,0 +1,68 @@
+﻿var chrhcMapBaseUrl;
+(function() {
+    var isWinRT = (typeof Windows === "undefined") ? false : true;
+    var r = new RegExp("(^|(.*?\\/))(ChrhcMap.Include\.js)(\\?|$)"),
+    s = document.getElementsByTagName('script'),
+    src, m, baseurl = "";
+    for(var i=0, len=s.length; i<len; i++) {
+        src = s[i].getAttribute('src');
+        if(src) {
+            var m = src.match(r);
+            if(m) {
+                baseurl = m[1];
+				chrhcMapBaseUrl = baseurl;
+                break;
+            }
+        }
+    }
+    function inputScript(inc){
+        if (!isWinRT) {
+            var script = '<' + 'script type="text/javascript" src="' + inc + '"' + '><' + '/script>';
+            document.writeln(script);
+        } else {
+            var script = document.createElement("script");
+            script.src = inc;
+            document.getElementsByTagName("HEAD")[0].appendChild(script);
+        }
+    }
+    function inputCSS(url,style){
+        if (!isWinRT) {
+            var css = '<' + 'link rel="stylesheet" href="' + style + '"' + '><' + '/>';
+            document.writeln(css);
+        } else { 
+            var link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href =  "/theme/default/" + style;
+            document.getElementsByTagName("HEAD")[0].appendChild(link);
+        }
+    }
+    //加载类库资源文件
+    function loadSMLibs() {
+        inputScript(baseurl+'SuperMap-7.1.1-12126.js');
+        inputCSS("",baseurl + '../theme/default/style.css');
+        inputCSS("",baseurl + '../theme/default/google.css');
+		inputCSS("",baseurl + '../examples/css/infowindow.css');
+    }
+    //引入汉化资源文件
+    function loadLocalization() {
+        inputScript(baseurl + 'Lang/zh-CN.js');
+    }
+	function loadChrhcJs(){
+		 
+		 inputScript(baseurl + '../examples/js/jquery-1.5.1.min.js');
+		 inputScript(baseurl + '../examples/js/contextmenu.js');
+		 inputScript(baseurl + '../examples/js/HashMap.js');
+		 //inputScript(baseurl + '../examples/js/osp.js');
+		 //inputScript(baseurl + '../examples/js/osp_map.js');
+		 inputScript(baseurl + '../examples/chrhcjs/chrhc_map.js');
+		 inputScript(baseurl + '../examples/chrhcjs/measure.js');
+		 inputScript(baseurl + '../examples/chrhcjs/sdconfig.js');
+		 inputScript(baseurl + '../examples/chrhcjs/chrhc_layer.js');
+		 inputScript(baseurl + '../examples/chrhcjs/chrhc_query.js');
+		 inputScript(baseurl + '../examples/chrhcjs/chrhc_style.js');
+		 inputScript(baseurl + '../examples/chrhcjs/chrhc_infoWindow.js');
+		 inputScript(baseurl + '../examples/chrhcjs/chrhc_draw.js');
+
+	}
+    loadSMLibs();loadLocalization();loadChrhcJs();
+})();

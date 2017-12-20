@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://www.zeroturnaround.com http://www.zeroturnaround.com/alderaan/rebel-2_0.xsd">
+
+	<classpath>
+		<dir name="E:/edv/callcenter/sscall/trunk/src/sc-maven/sc-maven/target/classes">
+		</dir>
+	</classpath>
+
+	<web>
+		<link target="/">
+			<dir name="E:/edv/sscall/trunk/src/sc-maven/sc-maven/src/mainwebapp">
+			</dir>
+		</link>
+	</web>
+
+</application>

@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>添加实体图层并编辑</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8;IE=8" />
+<script type="text/javascript" src="lib/ChrhcMap.Include.js"></script>
+    <script type="text/javascript">
+        var baseMap, eyeMap;
+		var cMap;
+		var entityAdded=false;
+		var markerEntityLayer ;
+		var textEntityLayer ;
+		var complexEntityLayer ;
+		var _LineLayer;
+		var selectObj;
+        function InitMap() {
+		var option={ 
+			mapId:"mapDiv",
+			mapWidth:800,
+			mapHeight:800,
+			callBack:setMap//地图初始化完毕后执行的方法
+			};
+		   cMap = new ChrhcMap(option);
+		
+		
+        }
+		function setMap(map){
+			baseMap = map;
+			//AppendTestEntitys();
+			  
+		}
+
+		var textEntityAdded = false;
+		function AppendTextEntitys(){
+			if(!textEntityAdded){
+				//***************本段代码需要重写，通过从数据库查询返回结果进行组装
+				var _entityNames = ['肯德基', '麦当劳', '必胜客', '蒸味豪', '米宝宝', '老沙发上地方的说法娘舅', '丁哥黑鱼', '外婆家', '新龙宫', '碗柜'];
+				
+				var dataSource = [];
+				var arrBounds = baseMap.GetMapPosCurrentRegion(); //左上，右上，右下，左下
+					for (var i = 0; i < _entityNames.length; i++) {
+						var _x = Math.floor(Math.random() * (arrBounds[2].X - arrBounds[0].X + 1) + arrBounds[0].X);
+						var _y = Math.floor(Math.random() * (arrBounds[2].Y - arrBounds[0].Y + 1) + arrBounds[0].Y);
+							dataSource.push(
+											{name:_entityNames[i],
+											 id:10+i,
+											 coords:_x+","+_y
+											});
+					}
+				//*************以上代码需要重写
+				var config = {baseMap:baseMap,symbleType:"Text",style:"padding:2px;border:2px solid red;font-size:12px;font-weight:bold;background-color:#fff;"};
+				var markerSymble = new ChrhcMap.Symble(config);
+				var layerConfig = {
+						map:cMap,//初始化地图返回的地图对象
+						layerName:"文本",
+						layerType:"Entitys",//
+						symble:markerSymble,
+						//config:{enableEdit:true},
+						editEvent:{onDragStick:onDragCompleteEvent},//仅当config.enableEdit==true有效
+						event:{onClick:clickEvent,onMouseOver:onmouseover},
+						dataSource:dataSource
+				}
+				textEntityLayer = new ChrhcMap.Layer(layerConfig);
+				textEntityAdded = true;
+			}else{
+				alert("已经添加过了！");
+			}
+			
+		}
+
+		
+		/*
+		return :id,name, coords
+		*/
+		function onDragCompleteEvent(id,name, coords){
+			alert("当前编辑的实体ID是:"+id+" 名称是"+name+" 坐标串:"+coords);
+			/*
+			此处可以对当前编辑过的对象进行数据库的更新操作
+			*/
+		}
+		function clickEvent(e){
+			alert("当前是自定义点击事件,名称："+e.name+" ID:"+e.id);
+			//e.removeNode();
+			selectObj = e;
+		}
+		function onmouseover(e){
+			//alert("当前是自定义鼠标经过事件"+e.name);
+		}
+		function deleteData(){
+			if(complexEntityLayer!=null){
+				complexEntityLayer.clearFeatures(["10","11","12"]);
+			}
+			
+		}
+    </script>
+
+</head>
+<body style="margin: 0" onload="InitMap();">
+<div id="mapDiv" />
+ <div id="tool" style="position: absolute; top: 10px; left: 10px; background: #fff;font-size: 12px;">
+		<span style="cursor: pointer; margin-left: 5px;" onclick="AppendTextEntitys();">添加文本实体图层</span>	
+		<span style="cursor: pointer; margin-left: 5px;" onclick="deleteData();">删除"肯德基、麦当劳"等外企</span>	
+</body>
+
+</html>

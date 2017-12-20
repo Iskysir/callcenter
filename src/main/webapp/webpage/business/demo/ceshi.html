@@ -1,0 +1,230 @@
+<script type="text/javascript" src="plug-in/jquery/jquery-1.8.3.js"></script>
+<script type="text/javascript" src="plug-in/tools/dataformat.js"></script>
+<link id="easyuiTheme" rel="stylesheet" href="plug-in/easyui/themes/default/easyui.css" type="text/css"></link>
+<link rel="stylesheet" href="plug-in/easyui/themes/icon.css" type="text/css"></link>
+<link rel="stylesheet" type="text/css" href="plug-in/accordion/css/accordion.css">
+<link href="plug-in/chrhc/style.css" rel="stylesheet">
+<script type="text/javascript" src="plug-in/easyui/jquery.easyui.min.1.3.2.js"></script>
+<script type="text/javascript" src="plug-in/easyui/locale/zh-cn.js"></script>
+<script type="text/javascript" src="plug-in/tools/syUtil.js"></script>
+<script type="text/javascript" src="plug-in/lhgDialog/lhgdialog.min.js"></script>
+<script type="text/javascript" src="plug-in/artDiglog/artDialog.js?skin=blue"></script>
+<script type="text/javascript" src="plug-in/tools/curdtools_zh-cn.js"></script>
+<script type="text/javascript" src="plug-in/tools/easyuiextend.js"></script>
+<script type="text/javascript">
+    $(function(){
+        var urlConfigString = '{"queryType":"**","id_mapping":"devid=devid"}'|| "{}";
+        var config =eval('('+urlConfigString+')');
+
+        $('#hl_bucusname_infoList').datagrid(
+                {
+                    idField: 'id',
+                    /*title: ' hl_bucusname_info',*/
+                    url:'cgReportController.do?datagrid&configId=hl_bucusname_info',
+                    fit:true,
+                    fitColumns:true,
+                    pageSize: 10,
+                    pagination:true,
+                    pageList:[10,30,50,100],
+                    singleSelect:config.singleSelect || false,
+                    sortOrder:'asc',
+                    rownumbers:true,
+                    showFooter:true,
+                    frozenColumns:[[]],
+                    columns:[
+                        [
+                            {field:'ck',checkbox:true},
+                            {field:'devid',
+                                title:'DEVID',
+
+                                width:50
+                            },
+                            {field:'zdh',
+                                title:'终端号',
+
+                                width:50
+                            },
+                            {field:'shm',
+                                title:'商户名',
+
+                                width:50
+                            },
+                            {field:'shh',
+                                title:'商户号',
+
+                                width:50
+                            },
+                            {field:'zjdz',
+                                title:'装机地址',
+
+                                width:50
+                            },
+                            {field:'cs',
+                                title:'厂商',
+
+                                width:50
+                            },
+                            {field:'jx',
+                                title:'机型',
+
+                                width:50
+                            },
+                            {field:'ds',
+                                title:'地市',
+
+                                width:50
+                            },
+                            {field:'xlh',
+                                title:'序列号',
+
+                                width:50
+                            },
+                            {field:'contact',
+                                title:'联系人',
+
+                                width:50
+                            },
+                            {field:'tel',
+                                title:'联系电话',
+
+                                width:50
+                            },
+                            {field:'address',
+                                title:'地址',
+
+                                width:50
+                            },
+                            {field:'sdjqmc',
+                                title:'收单机器名称',
+
+                                width:50
+                            },
+                            {field:'tzr',
+                                title:'拓展人',
+
+                                width:50
+                            },
+                            {field:'rownum_',
+                                title:'ROWNUM_',
+                                hidden:true,
+                                width:50
+                            }
+                        ]
+                    ],
+                    onLoadSuccess:function(data){
+                        $("#hl_bucusname_infoList").datagrid("clearChecked");
+                        selectDefaultValue(config ,data, 'hl_bucusname_infoList');
+                    },
+                    onClickRow:function(rowIndex,rowData) {
+                        rowid=rowData.id;gridname='hl_bucusname_infoList';
+                        if($('#hl_bucusname_infoList').datagrid('options').singleSelect){
+                            selectDefaultValue = function(){};
+                        }
+                    }
+
+                });
+        $('#hl_bucusname_infoList').datagrid('getPager').pagination({beforePageText:'',afterPageText:'/{pages}',displayMsg:'{from}-{to}共{total}条',showPageList:true,showRefresh:true});
+        $('#hl_bucusname_infoList').datagrid('getPager').pagination({onBeforeRefresh:function(pageNumber, pageSize){ $(this).pagination('loading');$(this).pagination('loaded'); }});});
+    function reloadTable(){
+        try{
+            $('#'+gridname).datagrid('reload');
+            $('#'+gridname).treegrid('reload');
+        }catch(ex){
+            //donothing
+        }
+    }
+    function reloadhl_bucusname_infoList(){$('#hl_bucusname_infoList').datagrid('reload');}
+    function gethl_bucusname_infoListSelected(field){return getSelected(field);}
+    function getSelected(field){var row = $('#'+gridname).datagrid('getSelected');if(row!=null){value= row[field];}else{value='';}return value;}
+    function gethl_bucusname_infoListSelections(field){var ids = [];var rows = $('#hl_bucusname_infoList').datagrid('getSelections');for(var i=0;i<rows.length;i++){ids.push(rows[i][field]);}ids.join(',');return ids};
+    function hl_bucusname_infoListsearch(){
+        var queryParams=$('#hl_bucusname_infoList').datagrid('options').queryParams;$('#hl_bucusname_infoListtb').find('*').each(function(){queryParams[$(this).attr('name')]=$(this).val();});$('#hl_bucusname_infoList').datagrid({url:'cgReportController.do?datagrid&configId=hl_bucusname_info',pageNumber:1});
+    }
+    function dosearch(params){var jsonparams=$.parseJSON(params);$('#hl_bucusname_infoList').datagrid({url:'cgReportController.do?datagrid&configId=hl_bucusname_info,',queryParams:jsonparams});}
+    function hl_bucusname_infoListsearchbox(value,name){var queryParams=$('#hl_bucusname_infoList').datagrid('options').queryParams;queryParams[name]=value;queryParams.searchfield=name;$('#hl_bucusname_infoList').datagrid('reload');}$('#hl_bucusname_infoListsearchbox').searchbox({searcher:function(value,name){hl_bucusname_infoListsearchbox(value,name);},menu:'#hl_bucusname_infoListmm',prompt:'请输入查询关键字'});
+
+    function hl_bucusname_infosearchReset(name){
+        $("#"+name+"tb").find("input[type!='hidden']").val("");
+        $("#"+name+"tb").find("select").val("");
+        hl_bucusname_infoListsearch();
+    }
+
+    function getSelectRows(){
+        return $('#hl_bucusname_infoList').datagrid('getChecked');
+    }
+    //将字段href中的变量替换掉
+    function applyHref(tabname,href,value,rec,index){
+        //addOneTab(tabname,href);
+        /* var hrefnew = href;
+         var re = "";
+         var p1 = /\#\{(\w+)\}/g;
+         try{
+         var vars =hrefnew.match(p1);
+         for(var i=0;i<vars.length;i++){
+         var keyt = vars[i];
+         var p2 = /\#\{(\w+)\}/g;
+         var key = p2.exec(keyt);
+         hrefnew =  hrefnew.replace(keyt,rec[key[1]]);
+         }
+         }catch(ex){
+         }*/
+
+        //var jsonString = {};
+        //jsonString.content = value;
+        var id = rec.id;
+        var re = "";
+        var dd = encodeURI(value);
+        re += "<a href = '#'  onclick=\"viewdetail('"+id+"')\" ><u>"+value+"</u></a>";
+        return re;
+    }
+    function viewdetail(id){
+        // value = decodeURI(value);
+
+        $.dialog({
+            content:"url:HlSoundRecordController.do?zixundetail&id="+id,
+            title:"查看明细",
+            zIndex:9999999999,
+            width:600,
+            height: 500,
+            parent:windowapi,
+            cache:false,
+            cancelVal: '关闭',
+            cancel: function(){
+            }
+        }).zindex();
+    }
+</script>
+<table width="100%"   id="hl_bucusname_infoList" toolbar="#hl_bucusname_infoListtb"></table>
+<div id="hl_bucusname_infoListtb" style="padding:3px; height: auto">
+    <div name="searchColums">
+		<span style="display:-moz-inline-box;display:inline-block;">
+		<span style="display:-moz-inline-box;display:inline-block;width: auto; float:left; margin-left:15px; margin-top:5px; text-align:right;text-align:right;text-overflow:ellipsis;-o-text-overflow:ellipsis; overflow: hidden;white-space:nowrap;" title="终端号">终端号：</span>
+				<input type="text" name="zdh"  style="width: 150px"   />
+		</span>
+		<span style="display:-moz-inline-box;display:inline-block;">
+		<span style="display:-moz-inline-box;display:inline-block;width: auto; float:left; margin-left:15px; margin-top:5px; text-align:right;text-align:right;text-overflow:ellipsis;-o-text-overflow:ellipsis; overflow: hidden;white-space:nowrap;" title="商户名">商户名：</span>
+				<input type="text" name="shm"  style="width: 150px"   />
+		</span>
+		<span style="display:-moz-inline-box;display:inline-block;">
+		<span style="display:-moz-inline-box;display:inline-block;width: auto; float:left; margin-left:15px; margin-top:5px; text-align:right;text-align:right;text-overflow:ellipsis;-o-text-overflow:ellipsis; overflow: hidden;white-space:nowrap;" title="商户号">商户号：</span>
+				<input type="text" name="shh"  style="width: 150px"   />
+		</span>
+		<span style="display:-moz-inline-box;display:inline-block;">
+		<span style="display:-moz-inline-box;display:inline-block;width: auto; float:left; margin-left:15px; margin-top:5px; text-align:right;text-align:right;text-overflow:ellipsis;-o-text-overflow:ellipsis; overflow: hidden;white-space:nowrap;" title="装机地址">装机地址：</span>
+				<input type="text" name="zjdz"  style="width: 150px"   />
+		</span>
+		<span style="display:-moz-inline-box;display:inline-block;">
+		<span style="display:-moz-inline-box;display:inline-block;width: auto; float:left; margin-left:15px; margin-top:5px; text-align:right;text-align:right;text-overflow:ellipsis;-o-text-overflow:ellipsis; overflow: hidden;white-space:nowrap;" title="机型">机型：</span>
+				<input type="text" name="jx"  style="width: 150px"   />
+		</span>
+		<span style="display:-moz-inline-box;display:inline-block;">
+		<span style="display:-moz-inline-box;display:inline-block;width: auto; float:left; margin-left:15px; margin-top:5px; text-align:right;text-align:right;text-overflow:ellipsis;-o-text-overflow:ellipsis; overflow: hidden;white-space:nowrap;" title="地市">地市：</span>
+				<input type="text" name="ds"  style="width: 150px"   />
+		</span>
+		<span style="position:absolute;      top: 5px; right:10px; ">
+			<a href="#" class="findbtn-new" iconCls="icon-search" onclick="hl_bucusname_infoListsearch()" title="查询">&nbsp;</a>
+			<a href="#" class="resetbtn-new" iconCls="icon-reload" onclick="hl_bucusname_infosearchReset('hl_bucusname_infoList')" title="重置">&nbsp;</a>
+		</span>
+    </div>
+
+</div>

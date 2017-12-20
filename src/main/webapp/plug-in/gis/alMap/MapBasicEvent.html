@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>地图基本事件</title>
+    <script type="text/javascript" src="../Scripts/Library.js"></script>
+    <script type="text/javascript">
+        var vM;
+        var IsMapClick, IsMapMouseDown, IsMapMouseMove, IsMapMouseUp, IsMapMouseOut, IsMapMouseWheel, IsMapZoomBeforeChange, IsMapZoomChange, IsMapResize, IsMapMoveBegin = true, IsMapMovIng, IsMapMoveEnd, IsMapDblClick;
+
+        IsMapClick = true, IsMapMouseDown = true, IsMapMouseMove = true, IsMapMouseUp = true, IsMapMouseOut = true, IsMapMouseWheel = true, IsMapZoomBeforeChange = true, IsMapZoomChange = true, IsMapResize = true, IsMapMoveBegin = true, IsMapMovIng = true, IsMapMoveEnd = true, IsMapDblClick = true;
+        function InitMap() {
+            vM = vEdushiMap;
+
+            vM.attachEvent(AlaMap.KeyWord.EventName.MapMoveBegin, function (x, y) {
+                if (IsMapMoveBegin == true) {
+                    alert("地图窗口中心点变化变化前事件");
+                }
+            });
+        }
+        window.onload = InitMap;
+
+
+        var tool = {
+            //用户在地图上单击
+            MapClick: function () {
+                vM.attachEvent(AlaMap.KeyWord.EventName.MapClick, function (x, y, e) {
+                    if (IsMapClick == true) {
+                        alert("用户在地图上单击");
+                    }
+                });
+            },
+            //移除用户在地图上单击事件
+            RemoveMapClick: function () {
+                IsMapClick = false;
+                alert("移除用户在地图上单击事件成功");
+            }
+            ,
+            //用户在地图上鼠标按下
+            MapMouseDown: function () {
+                vM.attachEvent(AlaMap.KeyWord.EventName.MapMouseDown, function (x, y, e) {
+                    if (IsMapMouseDown == true) {
+                        alert("用户在地图上鼠标按下");
+                    }
+                });
+            },
+            //移除用户在地图上鼠标按下事件
+            RemoveMapMouseDown: function () {
+                IsMapMouseDown = false;
+                alert("移除用户在地图上鼠标按下事件成功");
+            }
+            ,
+            //用户在地图上鼠标移动
+            MapMouseMove: function () {
+                vM.attachEvent(AlaMap.KeyWord.EventName.MapMouseMove, function (x, y, e) {
+                    if (IsMapMouseMove == true) {
+                        alert("用户在地图上鼠标移动");
+                    }
+                });
+            },
+            //移除用户在地图上鼠标移动事件
+            RemoveMapMouseMove: function () {
+                IsMapMouseMove = false;
+                alert("移除用户在地图上鼠标移动事件成功");
+            }
+            ,
+            //用户在地图上鼠标松开
+            MapMouseUp: function () {
+                vM.attachEvent(AlaMap.KeyWord.EventName.MapMouseUp, function (e) {
+                    if (IsMapMouseUp == true) {
+                        alert("用户在地图上鼠标松开");
+                    }
+                });
+            },
+            //移除用户在地图上鼠标松开事件
+            RemoveMapMouseUp: function () {
+                IsMapMouseUp = false;
+                alert("移除用户在地图上鼠标松开事件成功");
+            },
+
+            //用户鼠标移动出地图范围
+            MapMouseOut: function () {
+                vM.attachEvent(AlaMap.KeyWord.EventName.MapMouseOut, function (e) {
+                    if (IsMapMouseOut == true) {
+                        alert("用户鼠标移动出地图范围");
+                    }
+                });
+            },
+            //移除用户鼠标移动出地图范围事件
+            RemoveMapMouseOut: function () {
+                IsMapMouseOut = false;
+                alert("移除用户鼠标移动出地图范围事件成功");
+            },
+
+            //用户在地图上使用鼠标滚轮
+            MapMouseWheel: function () {
+                vM.attachEvent(AlaMap.KeyWord.EventName.MapMouseWheel, function (e) {
+                    if (IsMapMouseWheel == true) {
+                        alert("用户在地图上使用鼠标滚轮");
+                    }
+                });
+            }
+            ,
+            //移除用户在地图上使用鼠标滚轮事件
+            RemoveMapMouseWheel: function () {
+                IsMapMouseWheel = false;
+                alert("移除用户在地图上使用鼠标滚轮事件成功");
+            },
+
+            //地图级别变化前
+            MapZoomBeforeChange: function () {
+                vM.attachEvent(AlaMap.KeyWord.EventName.MapZoomBeforeChange, function (newzoom, oldzoom) {
+                    if (IsMapZoomBeforeChange == true) {
+                        alert("地图级别变化前");
+                    }
+                });
+            },
+            //移除地图级别变化前事件
+            RemoveMapZoomBeforeChange: function () {
+                IsMapZoomBeforeChange = false;
+                alert("移除地图级别变化前事件成功");
+            }
+            ,
+            //地图级别变化
+            MapZoomChange: function () {
+                vM.attachEvent(AlaMap.KeyWord.EventName.MapZoomChange, function (zoom) {
+                    if (IsMapZoomChange == true) {
+                        alert("地图级别变化");
+                    }
+                });
+            },
+            //移除地图级别变化事件
+            RemoveMapZoomChange: function () {
+                IsMapZoomChange = false;
+                alert("移除地图级别变化事件成功");
+            },
+            //地图窗口尺寸变化
+            MapResize: function () {
+                vM.attachEvent(AlaMap.KeyWord.EventName.MapResize, function (width, height) {
+                    if (IsMapResize == true) {
+                        alert("地图窗口尺寸变化");
+                    }
+                });
+                vM.MapWidth(800);
+            },
+            //移除地图窗口尺寸变化事件
+            RemoveMapResize: function () {
+                IsMapResize = false;
+                alert("移除地图窗口尺寸变化事件成功");
+            },
+
+            //地图窗口中心点变化前事件
+            MapMoveBegin: function () {
+                debugger;
+                vM.attachEvent(AlaMap.KeyWord.EventName.MapMoveBegin, function (x, y) {
+                    if (IsMapMoveBegin == true) {
+                        alert("地图窗口中心点变化变化前事件");
+                    }
+                });
+            },
+            //移除地图窗口中心点变化前事件
+            RemoveMapMoveBegin: function () {
+                IsMapMoveBegin = false;
+                alert("移除地图窗口中心点变化前事件");
+            },
+
+            //地图窗口中心点变化
+            MapMovIng: function () {
+                vM.attachEvent(AlaMap.KeyWord.EventName.MapMovIng, function (x, y, flg) {
+                    if (IsMapMovIng == true) {
+                        alert("地图窗口中心点变化");
+                        IsMapMovIng = false;
+                    }
+                });
+            }
+            ,
+            //移除地图窗口中心点变化事件
+            RemoveMapMovIng: function () {
+                IsMapMovIng = false;
+                alert("移除地图窗口中心点变化事件成功");
+            },
+
+            //地图窗口中心点变化结束
+            MapMoveEnd: function () {
+                vM.attachEvent(AlaMap.KeyWord.EventName.MapMoveEnd, function (x, y, flg) {
+                    if (IsMapMoveEnd == true) {
+                        alert("地图窗口中心点变化结束");
+                    }
+                });
+            }
+            ,
+            //移除地图窗口中心点变化结束事件
+            RemoveMapMoveEnd: function () {
+                IsMapMoveEnd = false;
+                alert("移除地图窗口中心点变化结束事件成功");
+            },
+
+            //用户在地图上双击
+            MapDblClick: function () {
+                vM.attachEvent(AlaMap.KeyWord.EventName.MapDblClick, function (x, y, e) {
+                    if (IsMapDblClick == true) {
+                        alert("用户在地图上双击");
+                    }
+                });
+            },
+            //移除用户在地图上双击事件
+            RemoveMapDblClick: function () {
+                IsMapDblClick = false;
+                alert("移除用户在地图上双击事件成功");
+            }
+        }
+    </script>
+</head>
+<body style="margin: 0" onload="InitMap();">
+    <div id="EdushiMap">
+    </div>
+    <p>
+        用户在地图上操作触发相应的事件，例如：鼠标点击、双击、移动、地图缩放等。<br />
+        点击按钮-><input type="button" id="btnMapClick" value="注册" onclick="tool.MapClick();" />按钮,注册地图的鼠标单击事件。然后在地图上单击鼠标查看效果。<br />
+        点击按钮-><input type="button" id="btnRemoveMapClick" value="移除" onclick="tool.RemoveMapClick();" />按钮,移除地图的鼠标单击事件。<br />
+        点击按钮-><input type="button" id="btnMapMouseDown" value="注册" onclick="tool.MapMouseDown();" />按钮,注册地图的鼠标按下事件。然后在地图上按下鼠标左键查看效果。<br />
+        点击按钮-><input type="button" id="btnRemoveMapMouseDown" value="移除" onclick="tool.RemoveMapMouseDown();" />按钮,移除地图的鼠标按下事件。<br />
+        点击按钮-><input type="button" id="btnMapMouseMove" value="注册" onclick="tool.MapMouseMove();" />按钮,注册地图的鼠标移动事件。然后在地图上移动鼠标查看效果。<br />
+        点击按钮-><input type="button" id="btnRemoveMapMouseMove" value="移除" onclick="tool.RemoveMapMouseMove();" />按钮,移除地图的鼠标移动事件。<br />
+        点击按钮-><input type="button" id="btnMapMouseUp" value="注册" onclick="tool.MapMouseUp();" />按钮,注册地图的鼠标松开事件。然后在地图上松开鼠标查看效果。<br />
+        点击按钮-><input type="button" id="btnRemoveMapMouseUp" value="移除" onclick="tool.RemoveMapMouseUp();" />按钮,移除地图的鼠标松开事件。<br />
+        点击按钮-><input type="button" id="btnMapMouseOut" value="注册" onclick="tool.MapMouseOut();" />按钮,注册地图的鼠标移出地图范围事件。然后在地图上把鼠标移出地图范围查看效果。<br />
+        点击按钮-><input type="button" id="btnRemoveMapMouseOut" value="移除" onclick="tool.RemoveMapMouseOut();" />按钮,移除地图的鼠标移出地图范围事件。<br />
+        点击按钮-><input type="button" id="btnMapMouseWheel" value="注册" onclick="tool.MapMouseWheel();" />按钮,注册地图的鼠标滚轮事件。然后在地图上滑动鼠标滚轮查看效果。<br />
+        点击按钮-><input type="button" id="btnRemoveMapMouseWheel" value="移除" onclick="tool.RemoveMapMouseWheel();" />按钮,移除地图的鼠标滚轮事件。<br />
+        点击按钮-><input type="button" id="btnMapZoomBeforeChange" value="注册" onclick="tool.MapZoomBeforeChange();" />按钮,注册地图的地图级别变化前事件。然后在地图上缩放地图级别查看效果。<br />
+        点击按钮-><input type="button" id="btnRemoveMapZoomBeforeChange" value="移除" onclick="tool.RemoveMapZoomBeforeChange();" />按钮,移除地图的地图级别变化前事件。<br />
+        点击按钮-><input type="button" id="btnMapZoomChange" value="注册" onclick="tool.MapZoomChange();" />按钮,注册地图的级别变化事件。然后在地图上缩放地图级别查看效果。<br />
+        点击按钮-><input type="button" id="btnRemoveMapZoomChange" value="移除" onclick="tool.RemoveMapZoomChange();" />按钮,移除地图的级别变化事件。<br />
+        点击按钮-><input type="button" id="btnMapResize" value="注册" onclick="tool.MapResize();" />按钮,注册地图的地图窗口尺寸变化事件。然后在地图上查看效果。<br />
+        点击按钮-><input type="button" id="btnRemoveMapResize" value="移除" onclick="tool.RemoveMapResize();" />按钮,移除地图的地图窗口尺寸变化事件。<br />
+        点击按钮-><input type="button" id="btnMapMoveBegin" value="注册" onclick="vM.MoveTo((Math.random()*(vM.CenterX())),(Math.random()*(vM.CenterY())));" />按钮,注册地图的地图窗口中心点变化前事件。然后在地图上查看效果。<br />
+        点击按钮-><input type="button" id="btnRemoveMapMoveBegin" value="移除" onclick="tool.RemoveMapMoveBegin();" />按钮,移除地图的地图窗口中心点变化前事件。<br />
+        点击按钮-><input type="button" id="btnMapMovIng" value="注册" onclick="tool.MapMovIng();" />按钮,注册地图的地图窗口中心点变化中事件。然后在地图上拖动地图查看效果。<br />
+        点击按钮-><input type="button" id="btnRemoveMapMovIng" value="移除" onclick="tool.RemoveMapMovIng();" />按钮,移除地图的地图窗口中心点变化中事件。<br />
+        点击按钮-><input type="button" id="btnMapMoveEnd" value="注册" onclick="tool.MapMoveEnd();" />按钮,注册地图的地图窗口中心点变化结束事件。然后在地图上拖动地图查看效果。<br />
+        点击按钮-><input type="button" id="btnRemoveMapMoveEnd" value="移除" onclick="tool.RemoveMapMoveEnd();" />按钮,移除地图的地图窗口中心点变化结束事件。<br />
+        点击按钮-><input type="button" id="btnMapDblClick" value="注册" onclick="tool.MapDblClick();" />按钮,注册地图的地图双击事件。然后在地图上双击鼠标左键查看效果。<br />
+        点击按钮-><input type="button" id="btnRemoveMapDblClick" value="移除" onclick="tool.RemoveMapDblClick();" />按钮,移除地图的地图双击事件。<br />
+    </p>
+</body>
+</html>
+<script type="text/javascript" src="http://apiinkey.alayun.net/?mapid=EdushiMap&city=hangzhou&w=1120&x=7050&y=12866&eye=false&ew=180&eh=140&e=utf-8&z=1&v=0&zb=false&s=true"></script>

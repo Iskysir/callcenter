@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>加载地图</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="lib/ChrhcMap.Include.js"></script>
+    <script type="text/javascript">
+        var baseMap, eyeMap;
+		var cMap;
+		var entityAdded=false;
+		var entityLayer ;
+		var _LineLayer;
+        function InitMap() {
+		var option={ 
+			mapId:"mapDiv",//自定义DIV ID,该ID指定将地图放在什么位置
+			mapWidth:900,//地图的宽度
+			mapHeight:900,//地图的高度
+			centerTo:"11894,14420"//初始化时定位到的位置
+			}
+		   cMap = new ChrhcMap(option);
+		
+		
+        }
+		
+    </script>
+
+</head>
+<body style="margin: 0" onload="InitMap();">
+<div id="mapDiv" />
+</body>
+
+</html>

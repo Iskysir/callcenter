@@ -1,0 +1,432 @@
+/*!
+ * style.css v 1.0.0
+ * Copyright 2015 mengfx
+ */
+
+  /* 公共css */
+  html, body, div, p, ul, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, form, input, select, button, textarea, iframe, table, th, td {
+    margin: 0;
+    padding: 0; 
+    word-wrap:break-word; 
+  } 
+  html,body {
+    font-size:12px;
+    color:#000000;
+  }
+  body.building-box {
+    background-color:#C4E3F4;
+  }
+  body.family-box {
+    background-color:#F6F6F6;
+  }
+
+  /*
+  *生成房间
+  */
+  .building {
+    margin-top: 10px;
+    width: 100%;
+    background-color: #9CD2EE;
+  }
+  .building table {
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+  }
+  .building table th,td {
+    text-align: center;
+  }
+  .unit {
+    width: 150px;
+    height: 80px;
+    line-height: 80px;
+    display: inline-block;
+    color: #FFFFFF;
+    font-size: 16px;
+    background-color: #60B6E3;
+  }
+  .home {
+    height: 150px;
+    line-height: 150px;
+    margin-top: 30px;
+    display: inline-block;
+  }
+  .home-num {
+    display: inline-block;
+    position: absolute;
+    top: 0px;
+    left: 40px;
+    width: 60px;
+    height: 22px;
+    line-height: 22px;
+    color: #FFFFFF;
+    background-color: #60B6E3;
+  }
+  .cell {
+    position: relative;
+    float: left;
+    width: 140px;
+    height: 150px;
+    display: inline-block;
+    background: url(../images/cell.png);
+  }
+  .cell-left {
+    float: left;
+    display: inline-block;
+    width: 10px;
+    height: 150px;
+    background: url(../images/cell_left.png);
+  }
+  .cell-right {
+    float: left;
+    display: inline-block;
+    width: 10px;
+    height: 150px;
+    background: url(../images/cell_right.png);
+  }
+
+
+
+  /*
+  *家庭关系
+  */
+  .family {
+    width: 1028px;
+    height: 800px;
+    margin: 0 auto;
+    margin-top: 50px;
+  }
+  .family-title {
+    width: 100%;
+    text-align: center;
+  }
+  .family-title .title-first {
+    font-size: 30px;
+    display: block;
+  }
+  .family-title .title-second {
+    font-size: 20px;
+    display: block;
+  }
+  .family-map {
+    height: 740px;
+    position: relative;
+  }
+  .role {
+    position: absolute;
+    width: 60px;
+    height: 100px;
+    display: inline-block;
+    background-image: url(../images/role.png);
+  }
+  .role-checked {
+    background-image: url(../images/role_have.png);
+  }
+  .role-checked:hover {
+    cursor: pointer;
+    border-radius: 6px;
+    background-color: #1288CE;
+  }
+  .role-zf {
+    top: 0px;
+    left: 300px;
+    background-position: 0px 0px;
+  }
+  .role-zm {
+    top: 0px;
+    left: 360px;
+    background-position: -100px 0px;
+  }
+  .role-wzf {
+    top: 0px;
+    left: 620px;
+    background-position: -200px 0px;
+  }
+  .role-wzm {
+    top: 0px;
+    left: 680px;
+    background-position: -300px 0px;
+  }
+  .role-gm {
+    top: 150px;
+    left: 0px;
+    background-position: -0px -100px;
+  }
+  .role-gz {
+    top: 150px;
+    left: 60px;
+    background-position: -100px -100px;
+  }
+  .role-bf {
+    top: 150px;
+    left: 132px;
+    background-position: -200px -100px;
+  }
+  .role-bm {
+    top: 150px;
+    left: 195px;
+    background-position: -300px -100px;
+  }
+  .role-fq {
+    top: 150px;
+    left: 455px;
+    background-position: -400px 0px;
+  }
+  .role-mq {
+    top: 150px;
+    left: 515px;
+    background-position: -500px 0px;
+  }
+  .role-jm {
+    top: 150px;
+    left: 772px;
+    background-position: -400px -100px;
+  }
+  .role-jj {
+    top: 150px;
+    left: 832px;
+    background-position: -500px -100px;
+  }
+  .role-yz {
+    top: 150px;
+    left: 900px;
+    background-position: -600px 0px;
+  }
+  .role-ym {
+    top: 150px;
+    left: 960px;
+    background-position: -700px 0px;
+  }
+  .role-bxdA {
+    top: 295px;
+    left: 0px;
+    background-position: -600px -100px;
+  }
+  .role-bjmA {
+    top: 295px;
+    left: 60px;
+    background-position: -700px -100px;
+  }
+  .role-txd {
+    top: 295px;
+    left: 133px;
+    background-position: -0px -200px;
+  }
+  .role-tjm {
+    top: 295px;
+    left: 193px;
+    background-position: -100px -200px;
+  }
+  .role-gg {
+    top: 295px;
+    left: 260px;
+    background-position: -200px -200px;
+  }
+  .role-ss {
+    top: 295px;
+    left: 320px;
+    background-position: -300px -200px;
+  }
+  .role-lg {
+    top: 295px;
+    left: 455px;
+    background-position: -400px -200px;
+  }
+  .role-lp {
+    top: 295px;
+    left: 515px;
+    background-position: -500px -200px;
+  }
+  .role-jiej {
+    top: 295px;
+    left: 645px;
+    background-position: -600px -200px;
+  }
+  .role-jief {
+    top: 295px;
+    left: 705px;
+    background-position: -700px -200px;
+  }
+  .role-bxdB {
+    top: 295px;
+    left: 775px;
+    background-position: 0px -300px;
+  }
+  .role-bjmB {
+    top: 295px;
+    left: 835px;
+    background-position: -100px -300px;
+  }
+  .role-bxdC {
+    top: 295px;
+    left: 902px;
+    background-position: -200px -300px;
+  }
+  .role-bjmC {
+    top: 295px;
+    left: 962px;
+    background-position: -300px -300px;
+  }
+  .role-zz {
+    top:  445px;
+    left:  260px;
+    background-position: -400px -300px;
+  }
+  .role-zn {
+    top:  445px;
+    left:  320px;
+    background-position: -500px -300px;
+  }
+  .role-ez {
+    top:  445px;
+    left:  388px;
+    background-position: -600px -300px;
+  }
+  .role-ex {
+    top:  445px;
+    left:  448px;
+    background-position: -700px -300px;
+  }
+  .role-nx {
+    top:  445px;
+    left:  514px;
+    background-position: 0px -400px;
+  }
+  .role-ne {
+    top:  445px;
+    left:  574px;
+    background-position: -100px -400px;
+  }
+  .role-ws {
+    top:  445px;
+    left:  645px;
+    background-position: -200px -400px;
+  }
+  .role-wsn {
+    top:  445px;
+    left:  705px;
+    background-position: -300px -400px;
+  }
+  .role-sz {
+    top:  595px;
+    left:  388px;
+    background-position: -400px -400px;
+  }
+  .role-sn {
+    top:  595px;
+    left:  448px;
+    background-position: -500px -400px;
+  }
+  .role-wsun {
+    top:  595px;
+    left:  518px;
+    background-position: -600px -400px;
+  }
+  .role-wsunn {
+    top:  595px;
+    left:  579px;
+    background-position: -700px -400px;
+  }
+
+  .node1A {
+    position: absolute;
+    top: 108px;
+    left: 32px;
+    width: 450px;
+    height: 41px;
+    background: url(../images/node01.png) no-repeat left top;
+  }
+  .node1B {
+    position: absolute;
+    top: 110px;
+    left: 540px;
+    width: 454px;
+    height: 38px;
+    background: url(../images/node02.png) no-repeat left top;
+  }
+  .node2A {
+    position: absolute;
+    top: 255px;
+    left: 33px;
+    width: 62px;
+    height: 38px;
+    background: url(../images/node03.png) no-repeat left top;
+  }
+  .node2B {
+    position: absolute;
+    top: 255px;
+    left: 163px;
+    width: 62px;
+    height: 38px;
+    background: url(../images/node03.png) no-repeat left top;
+  }
+  .node2C {
+    position: absolute;
+    top: 255px;
+    left: 288px;
+    width: 386px;
+    height: 38px;
+    background: url(../images/node04.png) no-repeat left top;
+  }
+  .node2D {
+    position: absolute;
+    top: 255px;
+    left: 803px;
+    width: 62px;
+    height: 38px;
+    background: url(../images/node03.png) no-repeat left top;
+  }
+  .node2E {
+    position: absolute;
+    top: 255px;
+    left: 932px;
+    width: 62px;
+    height: 38px;
+    background: url(../images/node03.png) no-repeat left top;
+  }
+  .node3A {
+    position: absolute;
+    top: 405px;
+    left: 290px;
+    width: 62px;
+    height: 38px;
+    background: url(../images/node03.png) no-repeat left top;
+  }
+  .node3B {
+    position: absolute;
+    top: 405px;
+    left: 418px;
+    width: 190px;
+    height: 38px;
+    background: url(../images/node05.png) no-repeat left top;
+  }
+  .node3C {
+    position: absolute;
+    top: 405px;
+    left: 675px;
+    width: 62px;
+    height: 38px;
+    background: url(../images/node03.png) no-repeat left top;
+  }
+  .node4A {
+    position: absolute;
+    top: 555px;
+    left: 415px;
+    width: 62px;
+    height: 38px;
+    background: url(../images/node03.png) no-repeat left top;
+  }
+  .node4B {
+    position: absolute;
+    top: 555px;
+    left: 548px;
+    width: 62px;
+    height: 38px;
+    background: url(../images/node03.png) no-repeat left top;
+  }
+
+  .tips {
+    line-height: 24px;
+  }
+
+  

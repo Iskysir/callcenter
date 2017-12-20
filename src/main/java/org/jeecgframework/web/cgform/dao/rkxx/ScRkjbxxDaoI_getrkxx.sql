@@ -1,0 +1,1 @@
+select id,grzp,xm,sfzh from  sc_rkjbxxnew where id ='${id}' and delflag='0'

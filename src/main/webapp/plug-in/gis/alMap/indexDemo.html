@@ -1,0 +1,167 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>加载地图</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=8;text/html;charset=utf-8" />
+	<script type="text/javascript" src="lib/ChrhcMap.Include.js"></script>
+		
+    <script type="text/javascript">
+
+        var baseMap, eyeMap;
+		var cMap;
+		var entityAdded=false;
+		var entityLayer ;
+		var currentLayer;
+			var urlConfigString = UtilMisc.getQueryString("config");
+			//var style = UtilMisc.getQueryString("style");
+			//alert(urlConfigString+style);
+			var urlConfig = eval('(' + urlConfigString + ')');
+			if(urlConfig==null){
+				urlConfig = "<%=urlConfigObj%>";
+			}
+			var centerTo = urlConfig.centerTo;
+			var coords = urlConfig.coords;
+			var drawType = urlConfig.drawType;
+			var enableEdit = urlConfig.enableEdit;
+			var drawPointEndCallBack = urlConfig.drawPointEndCallBack;
+			var drawLineEndCallBack = urlConfig.drawLineEnd;
+        function InitMap() {
+		/*
+		config:{
+			name:"测试3",
+			id:"3",
+			centerTo:"",
+			drawType:"point",
+			enableEdit:"",
+			coords :'10636,14728.5,10608,14890.5,11656,14466.5,10590,14568.5,10544,14276.5,10636,14728.5',// coordsArr[index],//收尾相接是面
+			style:{
+				Size:5,
+				FillColor:'#ff3300',
+				Strokecolor:'#ff8300',
+				Opacity:0.4,
+				Dashstyle:"longdash"//线段样式(IE下有效)，可用：solid|dot|dash|dashdot|longdash|longdashdot|longdashdotdot|shortdot|shortdash|shortdashdot|shortdashdotd
+			}
+		}
+		*/
+			
+			var option={ 
+				mapId:"mapDiv",
+				centerTo:centerTo,
+				mapWidth:800,
+				mapHeight:800,
+				showCenter:true,
+				callBack:initBussinesFunction//地图初始化完毕后执行的方法
+				};
+			   cMap = new ChrhcMap(option);
+        }
+		function initBussinesFunction(map){
+			baseMap = map;
+			//#################################手工绘图部分##############################
+			switch (drawType)
+			{
+				case "point":
+					var callBack = drawPointEndCallBack==null?drawPointEnd:drawPointEndCallBack;
+						ChrhcMap_Business_Functions.getPoint(cMap,callBack);
+				  break;
+				case "line":
+					var callBack = drawPointEndCallBack==null?drawLineEnd:drawLineEndCallBack
+						ChrhcMap_Business_Functions.getPolyLine(cMap,drawLineEnd);
+				  break;
+				case "polygon":
+					var callBack = drawPointEndCallBack==null?drawLineEnd:drawLineEndCallBack
+						ChrhcMap_Business_Functions.getPolygon(cMap,drawLineEnd);
+				  break;
+			}
+			//#################################自动画图并编辑部分##############################
+			if(urlConfig!=null){
+				var dataSource  = [urlConfig];	
+				for(var i=0;i<dataSource.length;i++){
+					dataSource[i].style ={
+										Size:5,
+										FillColor:'#ff3300',
+										Strokecolor:'#ff8300',
+										Opacity:0.4,
+										Dashstyle:"longdash"//线段样式(IE下有效)，可用：solid|dot|dash|dashdot|longdash|longdashdot|longdashdotdot|shortdot|shortdash|shortdashdot|shortdashdotd
+									}
+				}
+				var layerConfig = {
+						map:cMap,//初始化地图返回的地图对象
+						layerName:"画图",
+						editEvent:{onDragStick:onDragCompleteEvent},//仅当config.enableEdit==true有效
+						dataSource:dataSource
+					}
+					
+				var shapeType = ChrhcMap_Business_Functions.getCooordsType(coords);
+				
+					if(shapeType ==ChrhcMapConfig.entityPoint){
+						var markerConfig = {baseMap:baseMap,symbleType:"Markers",markerUrl:ChrhcMapConfig.getPointMarkerUrl};
+						var markerSymble = new ChrhcMap.Symble(markerConfig);
+							layerConfig.layerType = "Entitys";
+							layerConfig.symble = markerSymble;
+						
+					}else if(shapeType == ChrhcMapConfig.shapeLine||shapeType == ChrhcMapConfig.shapePolygon){
+							layerConfig.layerType = "Vector";
+							
+					} 
+					
+					currentLayer = new ChrhcMap.Layer(layerConfig);
+					if(enableEdit&&currentLayer!=null){
+						currentLayer.enableEdit(enableEdit);
+					}
+			}
+			
+			  
+		}
+		
+		
+		function clickEvent(e){
+			//alert("当前是自定义点击事件"+e.name);
+			//e.removeNode();
+			alert("当前选择的对象是"+e.name+" ID:"+e.id);
+			/*
+			此处自定义选择某个对象后触发的相关事件，比如说：根据ID进行查询
+			*/
+		}
+		function onmouseover(e){
+			//alert("当前是自定义鼠标经过事件"+e.name);
+		}
+		function editCompleteEvent(e1,e2){
+			alert("自定义编辑结束事件"+e1.GetCoords());
+		}
+		/*
+		e:dom;dom.entityInfo={X:123,Y:123,autoresize:false,W:70,H:30,exX:0,exY:0,enableEdit:false,autoremove:false,autozoomchangeremove:false}
+		*/
+		function onDragCompleteEvent(id,name,coords){
+			alert("当前编辑的实体ID是:"+id+" 名称是"+name+" 坐标串："+coords);
+			/*
+			此处可以对当前编辑过的对象进行数据库的更新操作
+			*/
+		}
+		/*
+		return :id,name, coords
+		*/
+		function drawPointEnd(id,name, coords){
+			alert("当前所画的图形ID:"+id+"坐标串："+coords);
+
+		}
+		/*
+		var callBackObject = {shapeId:shapeId,coords:coords};
+		*/
+		function drawLineEnd(e){
+			alert("当前所画的图形的ID为："+e.shapeId+" 坐标串为："+e.coords);
+			/*
+			此处可以进行数据的提交
+			*/
+		}
+    </script>
+
+</head>
+<body style="margin: 0" onload="InitMap();">
+<%
+	Object urlConfigObj = (Object)request.getAttribute("config");
+%>
+<div id="mapDiv" />
+
+</body>
+
+</html>

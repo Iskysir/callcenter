@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Entity事件</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="js/Library.js"></script>
+    <script type="text/javascript">
+        var vM;
+        function InitMap() {
+            vM = vEdushiMap; 
+        }
+        window.onload = InitMap;
+
+        //添加Entity
+        var _entityLayer;
+		var _entityLayer2;
+        var _entityNames = [];
+        _entityNames.push('测试中');
+		_entityNames.push('点我移动2222');
+		_entityNames.push('点我移动2222');
+		var points = [{x:7055,y:12900},{x:7255,y:12900},{x:7155,y:12500},{x:7055,y:12500}];
+        function AppendTestEntitys() {
+            debugger;
+            if (!_entityLayer) {
+                _entityLayer = vM.NewMapLayer('entityLayer', 601);
+            }
+            var arrBounds = vM.GetMapPosCurrentRegion(); //左上，右上，右下，左下
+			for(var i=0;i<100;i++){
+				var x = 7055+i*50;
+				var y = 12900+i*50;
+				if(i>20&&i<40){
+					 x = 7055+i*30;
+					 y = 12900+i*90;
+				}
+				//此处可以对$C创建的DIV对象进行封装，添加attribute属性
+				var p = vM.$C('div');            
+					p.innerHTML = string.Format(
+					'<span title="{1}"  style="padding:5px;border:2px solid red;font-size:12px;font-weight:bold;background-color:#fff;">{1}</span>', 'en_1', (i+1)+"号马路大");
+					p.id = 'en_'+i;
+					p.attribute ={x:"",y:""}
+					p.attribute.x = x;
+					p.attribute.y = y;
+					//参数：(o, layer, autoresize, x, y, w, h, exX, exY, candrag, autoremove, autozoomchangeremove)
+					var a = vM.AppendEntity(p, _entityLayer, false, x, y, 100, 30, 0, 0, false, false, false);
+					 p.onclick = MoveTestEntity;
+					 p.onmousedown = mouseFlowing;
+			}
+        }
+		function mouseFlowing(){
+		
+		}
+        //移动Entity
+        function MoveTestEntity(e) {
+		this;
+		//e={currentTarget:{id:"en_1",innerText:"测试中"}}
+			alert("我是"+e.currentTarget.innerText+",我的坐标串是"+this.attribute.x+","+this.attribute.y+", 找我有事？");
+        }
+		function layerShow(state){
+			if(!state&&_entityLayer){
+				_entityLayer.style.display = "none";
+			}else if(_entityLayer){
+				_entityLayer.style.display = "";
+			}
+			
+		}
+    </script>
+</head>
+<body style="margin: 0" onload="InitMap();">
+    <div id="EdushiMap">
+    </div>
+    <div id="eyeEdushiMap" style="position: absolute; bottom: 0px; right: 330px; bottom: 10px">
+    </div>
+    <div id="tool" style="position: absolute; top: 10px; left: 10px; background: #fff;font-size: 12px;">
+        <span style="cursor: pointer; margin-left: 5px;" onclick="AppendTestEntitys();">添加Entity</span>
+		<span style="cursor: pointer; margin-left: 5px;" onclick="layerShow(false);">隐藏Entity图层</span>
+		<span style="cursor: pointer; margin-left: 5px;" onclick="layerShow(true);">显示Entity图层</span>
+    </div>
+</body>
+</html>
+<script type="text/javascript" src="http://apiinkey.alayun.net/?mapid=EdushiMap&city=hangzhou&w=1120&x=7050&y=12866&eye=false&ew=180&eh=140&e=utf-8&z=1&v=0&zb=true&s=true"></script>
+

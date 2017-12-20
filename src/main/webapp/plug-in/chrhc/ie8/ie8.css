@@ -1,0 +1,49 @@
+/*!
+ * ie8.css v 1.0.0
+ * Copyright 2015 mengfx
+ */
+
+.Validform_right{
+	display:block;
+	margin-left:88px;
+	color:#71b83d !important;
+	padding-left:20px;
+	background:url(../images/right.png) no-repeat left center;
+}
+.Validform_wrong{
+	display:block;
+	margin-left:88px;
+	color:red !important;
+	padding-left:20px;
+	white-space:nowrap;
+	background:url(../images/error.png) no-repeat left center;
+}
+
+.col-md-6{
+	width: 50%;
+	float: left;
+}
+.form-inline .form-group {
+    margin-bottom: 0;
+    vertical-align: middle;
+    word-wrap: break-word;
+}
+.control-label{
+	float: left;
+	 word-wrap: break-word;
+}
+.form-control{
+	float: left;
+	 word-wrap: break-word;
+}
+.form-group span{
+
+	word-wrap: break-word;
+}
+.Validform_checktip{
+	clear:both;
+	word-wrap: break-word;
+}
+.datagrid-toolbar div[name="searchColums"]{margin-right:290px; padding-right:0px;}
+.datagrid-toolbar div[name="searchColums"] span{display: inline !important;}
+ .findBox-new{margin-right:-290px;}
